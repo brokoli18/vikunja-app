@@ -23,36 +23,38 @@ class Bucket {
     DateTime? updated,
     required this.createdBy,
     List<Task>? tasks,
-  })  : this.created = created ?? DateTime.now(),
-        this.updated = created ?? DateTime.now(),
-        this.tasks = tasks ?? [];
+  }) : this.created = created ?? DateTime.now(),
+       this.updated = created ?? DateTime.now(),
+       this.tasks = tasks ?? [];
 
   Bucket.fromJSON(Map<String, dynamic> json)
-      : id = json['id'],
-        projectViewId = json['project_view_id'],
-        title = json['title'],
-        position = json['position'] is int
-            ? json['position'].toDouble()
-            : json['position'],
-        limit = json['limit'],
-        created = DateTime.parse(json['created']),
-        updated = DateTime.parse(json['updated']),
-        createdBy = User.fromJson(json['created_by']),
-        tasks = json['tasks'] == null
-            ? []
-            : (json['tasks'] as List<dynamic>)
-                .map((task) => Task.fromJson(task))
-                .toList();
+    : id = json['id'],
+      projectViewId = json['project_view_id'],
+      title = json['title'],
+      position =
+          json['position'] is int
+              ? json['position'].toDouble()
+              : json['position'],
+      limit = json['limit'],
+      created = DateTime.parse(json['created']),
+      updated = DateTime.parse(json['updated']),
+      createdBy = User.fromJson(json['created_by']),
+      tasks =
+          json['tasks'] == null
+              ? []
+              : (json['tasks'] as List<dynamic>)
+                  .map((task) => Task.fromJson(task))
+                  .toList();
 
   toJSON() => {
-        'id': id,
-        'project_view_id': projectViewId,
-        'title': title,
-        'position': position,
-        'limit': limit,
-        'created': created.toUtc().toIso8601String(),
-        'updated': updated.toUtc().toIso8601String(),
-        'created_by': createdBy.toJSON(),
-        'tasks': tasks.map((task) => task.toJSON()).toList(),
-      };
+    'id': id,
+    'project_view_id': projectViewId,
+    'title': title,
+    'position': position,
+    'limit': limit,
+    'created': created.toUtc().toIso8601String(),
+    'updated': updated.toUtc().toIso8601String(),
+    'created_by': createdBy.toJSON(),
+    'tasks': tasks.map((task) => task.toJSON()).toList(),
+  };
 }

@@ -8,8 +8,12 @@ var _users = {1: User(id: 1, username: 'test1')};
 
 class MockedUserService implements UserService {
   @override
-  Future<UserTokenPair> login(String username, password,
-      {bool rememberMe = false, String? totp}) {
+  Future<UserTokenPair> login(
+    String username,
+    password, {
+    bool rememberMe = false,
+    String? totp,
+  }) {
     return Future.value(UserTokenPair(_users[1]!, 'abcdefg'));
   }
 

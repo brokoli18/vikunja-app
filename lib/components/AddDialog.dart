@@ -16,13 +16,13 @@ class AddDialog extends StatefulWidget {
   final void Function(String title, DateTime? dueDate)? onAddTask;
   final InputDecoration? decoration;
   final String? prefilledTitle;
-  const AddDialog(
-      {Key? key,
-      this.onAdd,
-      this.decoration,
-      this.onAddTask,
-      this.prefilledTitle})
-      : super(key: key);
+  const AddDialog({
+    Key? key,
+    this.onAdd,
+    this.decoration,
+    this.onAddTask,
+    this.prefilledTitle,
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => AddDialogState();
@@ -47,36 +47,41 @@ class AddDialogState extends State<AddDialog> with AfterLayoutMixin<AddDialog> {
       customDueDate = DateTime.now().add(newTaskDueToDuration[newTaskDue]!);
     return new AlertDialog(
       contentPadding: const EdgeInsets.all(16.0),
-      content: new Column(mainAxisSize: MainAxisSize.min, children: [
-        Row(children: <Widget>[
-          Expanded(
-            child: new TextField(
-              autofocus: true,
-              decoration: widget.decoration,
-              controller: textController,
-            ),
+      content: new Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            children: <Widget>[
+              Expanded(
+                child: new TextField(
+                  autofocus: true,
+                  decoration: widget.decoration,
+                  controller: textController,
+                ),
+              ),
+            ],
           ),
-        ]),
-        widget.onAddTask != null
-            ? taskDueList("1 Day", NewTaskDue.day)
-            : new Container(),
-        widget.onAddTask != null
-            ? taskDueList("1 Week", NewTaskDue.week)
-            : new Container(),
-        widget.onAddTask != null
-            ? taskDueList("1 Month", NewTaskDue.month)
-            : new Container(),
-        widget.onAddTask != null
-            ? VikunjaDateTimePicker(
+          widget.onAddTask != null
+              ? taskDueList("1 Day", NewTaskDue.day)
+              : new Container(),
+          widget.onAddTask != null
+              ? taskDueList("1 Week", NewTaskDue.week)
+              : new Container(),
+          widget.onAddTask != null
+              ? taskDueList("1 Month", NewTaskDue.month)
+              : new Container(),
+          widget.onAddTask != null
+              ? VikunjaDateTimePicker(
                 label: "Enter exact time",
                 onChanged: (value) {
                   setState(() => newTaskDue = NewTaskDue.custom);
                   customDueDate = value;
                 },
               )
-            : new Container(),
-        //],)
-      ]),
+              : new Container(),
+          //],)
+        ],
+      ),
       actions: <Widget>[
         new TextButton(
           child: const Text('CANCEL'),
@@ -92,23 +97,29 @@ class AddDialogState extends State<AddDialog> with AfterLayoutMixin<AddDialog> {
             }
             Navigator.pop(context);
           },
-        )
+        ),
       ],
     );
   }
 
   Widget taskDueList(String name, NewTaskDue thisNewTaskDue) {
-    return Row(children: [
-      Checkbox(
-        value: newTaskDue == thisNewTaskDue,
-        onChanged: (value) {
-          newTaskDue = thisNewTaskDue;
-          setState(() => customDueDate =
-              DateTime.now().add(newTaskDueToDuration[thisNewTaskDue]!));
-        },
-        shape: CircleBorder(),
-      ),
-      Text(name),
-    ]);
+    return Row(
+      children: [
+        Checkbox(
+          value: newTaskDue == thisNewTaskDue,
+          onChanged: (value) {
+            newTaskDue = thisNewTaskDue;
+            setState(
+              () =>
+                  customDueDate = DateTime.now().add(
+                    newTaskDueToDuration[thisNewTaskDue]!,
+                  ),
+            );
+          },
+          shape: CircleBorder(),
+        ),
+        Text(name),
+      ],
+    );
   }
 }

@@ -39,25 +39,25 @@ class Client {
     String? base,
     bool authenticated = false,
   }) {
-    configure(
-      token: token,
-      base: base,
-      authenticated: authenticated,
-    );
+    configure(token: token, base: base, authenticated: authenticated);
   }
 
   http.Client get httpClient {
     try {
       if (Platform.isAndroid) {
         final engine = cronet_http.CronetEngine.build(
-            cacheMode: cronet_http.CacheMode.memory, cacheMaxSize: 1000000);
+          cacheMode: cronet_http.CacheMode.memory,
+          cacheMaxSize: 1000000,
+        );
         return cronet_http.CronetClient.fromCronetEngine(engine);
       }
       if (Platform.isIOS || Platform.isMacOS) {
-        final config = cupertino_http.URLSessionConfiguration
-            .ephemeralSessionConfiguration()
-          ..cache =
-              cupertino_http.URLCache.withCapacity(memoryCapacity: 1000000);
+        final config =
+            cupertino_http
+                  .URLSessionConfiguration.ephemeralSessionConfiguration()
+              ..cache = cupertino_http.URLCache.withCapacity(
+                memoryCapacity: 1000000,
+              );
         return cupertino_http.CupertinoClient.fromSessionConfiguration(config);
       }
     } catch (e) {
@@ -70,28 +70,25 @@ class Client {
     ignoreCertificates = val ?? false;
     HttpOverrides.global = new IgnoreCertHttpOverrides(ignoreCertificates);
     if (global_scaffold_key == null ||
-        global_scaffold_key!.currentContext == null) return;
-    VikunjaGlobal.of(global_scaffold_key!.currentContext!)
-        .settingsManager
-        .setIgnoreCertificates(ignoreCertificates);
+        global_scaffold_key!.currentContext == null)
+      return;
+    VikunjaGlobal.of(
+      global_scaffold_key!.currentContext!,
+    ).settingsManager.setIgnoreCertificates(ignoreCertificates);
   }
 
   get _headers => {
-        'Authorization': _token != '' ? 'Bearer $_token' : '',
-        'Content-Type': 'application/json',
-        'User-Agent': 'Vikunja Mobile App',
-      };
+    'Authorization': _token != '' ? 'Bearer $_token' : '',
+    'Content-Type': 'application/json',
+    'User-Agent': 'Vikunja Mobile App',
+  };
 
   get headers => _headers;
 
   @override
   int get hashCode => _token.hashCode;
 
-  void configure({
-    String? token,
-    String? base,
-    bool? authenticated,
-  }) {
+  void configure({String? token, String? base, bool? authenticated}) {
     if (token != null) _token = token;
     if (base != null) {
       base = base.replaceAll(" ", "");
@@ -105,20 +102,23 @@ class Client {
     authenticated = false;
   }
 
-  Future<Response?> get(String url,
-      [Map<String, List<String>>? queryParameters]) {
+  Future<Response?> get(
+    String url, [
+    Map<String, List<String>>? queryParameters,
+  ]) {
     Uri uri = Uri.tryParse('${this.base}$url')!;
     // why are we doing it like this? because Uri doesnt have setters. wtf.
 
     uri = Uri(
-        scheme: uri.scheme,
-        userInfo: uri.userInfo,
-        host: uri.host,
-        port: uri.port,
-        path: uri.path,
-        //queryParameters: {...uri.queryParameters, ...?queryParameters},
-        queryParameters: queryParameters,
-        fragment: uri.fragment);
+      scheme: uri.scheme,
+      userInfo: uri.userInfo,
+      host: uri.host,
+      port: uri.port,
+      path: uri.path,
+      //queryParameters: {...uri.queryParameters, ...?queryParameters},
+      queryParameters: queryParameters,
+      fragment: uri.fragment,
+    );
 
     return httpClient
         .get(uri, headers: _headers)
@@ -128,10 +128,7 @@ class Client {
 
   Future<Response?> delete(String url) {
     return httpClient
-        .delete(
-          '${this.base}$url'.toUri()!,
-          headers: _headers,
-        )
+        .delete('${this.base}$url'.toUri()!, headers: _headers)
         .then(_handleResponse)
         .onError((error, stackTrace) => _handleError(error, stackTrace));
   }
@@ -163,8 +160,9 @@ class Client {
     SnackBar snackBar = SnackBar(
       content: Text("Error on request: " + e.toString()),
       action: SnackBarAction(
-          label: "Clear",
-          onPressed: () => global_scaffold_key!.currentState?.clearSnackBars()),
+        label: "Clear",
+        onPressed: () => global_scaffold_key!.currentState?.clearSnackBars(),
+      ),
     );
     global_scaffold_key!.currentState?.showSnackBar(snackBar);
     return null;
@@ -185,35 +183,43 @@ class Client {
 
       if (response.statusCode == 401 &&
           globalNavigatorKey.currentContext != null) {
-        VikunjaGlobal.of(globalNavigatorKey.currentContext!)
-            .logoutUser(globalNavigatorKey.currentContext!);
+        VikunjaGlobal.of(
+          globalNavigatorKey.currentContext!,
+        ).logoutUser(globalNavigatorKey.currentContext!);
       }
 
       final SnackBar snackBar = SnackBar(
-        content:
-            Text("Error code " + response.statusCode.toString() + " received."),
-        action: globalNavigatorKey.currentContext == null
-            ? null
-            : SnackBarAction(
-                label: ("Details"),
-                onPressed: () {
-                  showDialog(
+        content: Text(
+          "Error code " + response.statusCode.toString() + " received.",
+        ),
+        action:
+            globalNavigatorKey.currentContext == null
+                ? null
+                : SnackBarAction(
+                  label: ("Details"),
+                  onPressed: () {
+                    showDialog(
                       context: globalNavigatorKey.currentContext!,
-                      builder: (BuildContext context) => AlertDialog(
-                          title: Text("Error ${response.statusCode}"),
-                          content: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                "Message: ${error["message"]}",
-                                textAlign: TextAlign.start,
-                              ),
-                              Text("Url: ${response.request!.url.toString()}"),
-                            ],
-                          )));
-                },
-              ),
+                      builder:
+                          (BuildContext context) => AlertDialog(
+                            title: Text("Error ${response.statusCode}"),
+                            content: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  "Message: ${error["message"]}",
+                                  textAlign: TextAlign.start,
+                                ),
+                                Text(
+                                  "Url: ${response.request!.url.toString()}",
+                                ),
+                              ],
+                            ),
+                          ),
+                    );
+                  },
+                ),
       );
       if (global_scaffold_key != null && showSnackBar)
         global_scaffold_key!.currentState?.showSnackBar(snackBar);
@@ -225,8 +231,11 @@ class Client {
 
   Response? _handleResponse(http.Response response) {
     _handleResponseErrors(response);
-    return Response(_decoder.convert(utf8.decode(response.bodyBytes)),
-        response.statusCode, response.headers);
+    return Response(
+      _decoder.convert(utf8.decode(response.bodyBytes)),
+      response.statusCode,
+      response.headers,
+    );
   }
 }
 
@@ -234,7 +243,7 @@ class InvalidRequestApiException extends ApiException {
   final String message;
 
   InvalidRequestApiException(int errorCode, String path, this.message)
-      : super(errorCode, path);
+    : super(errorCode, path);
 
   @override
   String toString() {

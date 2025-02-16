@@ -28,15 +28,12 @@ class VikunjaDateTimePicker extends StatelessWidget {
     return DateTimeField(
       //dateOnly: false,
       //editable: false, // Otherwise editing the date is not possible, this setting affects the underlying text field.
-      initialValue: initialValue == null || initialValue!.year <= 1
-          ? null
-          : initialValue!.toLocal(),
+      initialValue:
+          initialValue == null || initialValue!.year <= 1
+              ? null
+              : initialValue!.toLocal(),
       format: vDateFormatLong,
-      decoration: InputDecoration(
-        labelText: label,
-        border: border,
-        icon: icon,
-      ),
+      decoration: InputDecoration(labelText: label, border: border, icon: icon),
       onSaved: onSaved,
       onChanged: onChanged,
       onShowPicker: (context, currentValue) {
@@ -48,23 +45,31 @@ class VikunjaDateTimePicker extends StatelessWidget {
 
   Future<DateTime?> _showDatePickerFuture(context, currentValue) {
     return showDialog(
-        context: context,
-        builder: (_) => DatePickerDialog(
-              initialDate:
-                  currentValue.year <= 1 ? DateTime.now() : currentValue,
-              firstDate: DateTime(1900),
-              lastDate: DateTime(2100),
-              initialCalendarMode: DatePickerMode.day,
-            )).then((date) {
+      context: context,
+      builder:
+          (_) => DatePickerDialog(
+            initialDate: currentValue.year <= 1 ? DateTime.now() : currentValue,
+            firstDate: DateTime(1900),
+            lastDate: DateTime(2100),
+            initialCalendarMode: DatePickerMode.day,
+          ),
+    ).then((date) {
       if (date == null) return null;
       return showDialog(
-          context: context,
-          builder: (_) => TimePickerDialog(
-                initialTime: TimeOfDay.fromDateTime(currentValue),
-              )).then((time) {
+        context: context,
+        builder:
+            (_) => TimePickerDialog(
+              initialTime: TimeOfDay.fromDateTime(currentValue),
+            ),
+      ).then((time) {
         if (time == null) return null;
         return DateTime(
-            date.year, date.month, date.day, time.hour, time.minute);
+          date.year,
+          date.month,
+          date.day,
+          time.hour,
+          time.minute,
+        );
       });
     });
   }

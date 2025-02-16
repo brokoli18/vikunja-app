@@ -6,9 +6,7 @@ import 'package:vikunja_app/service/services.dart';
 class ProjectAPIService extends APIService implements ProjectService {
   FlutterSecureStorage _storage;
 
-  ProjectAPIService(client, storage)
-      : _storage = storage,
-        super(client);
+  ProjectAPIService(client, storage) : _storage = storage, super(client);
 
   @override
   Future<Project?> create(Project p) {

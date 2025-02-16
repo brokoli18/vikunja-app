@@ -29,32 +29,31 @@ class UserSettings {
   });
 
   UserSettings.fromJson(Map<String, dynamic> json)
-      : default_project_id = json['default_project_id'],
-        discoverable_by_email = json['discoverable_by_email'],
-        discoverable_by_name = json['discoverable_by_name'],
-        email_reminders_enabled = json['email_reminders_enabled'],
-        frontend_settings = json['frontend_settings'],
-        language = json['language'],
-        name = json['name'],
-        overdue_tasks_reminders_enabled =
-            json['overdue_tasks_reminders_enabled'],
-        overdue_tasks_reminders_time = json['overdue_tasks_reminders_time'],
-        timezone = json['timezone'],
-        week_start = json['week_start'];
+    : default_project_id = json['default_project_id'],
+      discoverable_by_email = json['discoverable_by_email'],
+      discoverable_by_name = json['discoverable_by_name'],
+      email_reminders_enabled = json['email_reminders_enabled'],
+      frontend_settings = json['frontend_settings'],
+      language = json['language'],
+      name = json['name'],
+      overdue_tasks_reminders_enabled = json['overdue_tasks_reminders_enabled'],
+      overdue_tasks_reminders_time = json['overdue_tasks_reminders_time'],
+      timezone = json['timezone'],
+      week_start = json['week_start'];
 
   toJson() => {
-        'default_project_id': default_project_id,
-        'discoverable_by_email': discoverable_by_email,
-        'discoverable_by_name': discoverable_by_name,
-        'email_reminders_enabled': email_reminders_enabled,
-        'frontend_settings': frontend_settings,
-        'language': language,
-        'name': name,
-        'overdue_tasks_reminders_enabled': overdue_tasks_reminders_enabled,
-        'overdue_tasks_reminders_time': overdue_tasks_reminders_time,
-        'timezone': timezone,
-        'week_start': week_start,
-      };
+    'default_project_id': default_project_id,
+    'discoverable_by_email': discoverable_by_email,
+    'discoverable_by_name': discoverable_by_name,
+    'email_reminders_enabled': email_reminders_enabled,
+    'frontend_settings': frontend_settings,
+    'language': language,
+    'name': name,
+    'overdue_tasks_reminders_enabled': overdue_tasks_reminders_enabled,
+    'overdue_tasks_reminders_time': overdue_tasks_reminders_time,
+    'timezone': timezone,
+    'week_start': week_start,
+  };
 
   UserSettings copyWith({
     int? default_project_id,
@@ -79,7 +78,8 @@ class UserSettings {
       frontend_settings: frontend_settings ?? this.frontend_settings,
       language: language ?? this.language,
       name: name ?? this.name,
-      overdue_tasks_reminders_enabled: overdue_tasks_reminders_enabled ??
+      overdue_tasks_reminders_enabled:
+          overdue_tasks_reminders_enabled ??
           this.overdue_tasks_reminders_enabled,
       overdue_tasks_reminders_time:
           overdue_tasks_reminders_time ?? this.overdue_tasks_reminders_time,
@@ -102,15 +102,15 @@ class User {
     DateTime? created,
     DateTime? updated,
     this.settings,
-  })  : this.created = created ?? DateTime.now(),
-        this.updated = updated ?? DateTime.now();
+  }) : this.created = created ?? DateTime.now(),
+       this.updated = updated ?? DateTime.now();
 
   User.fromJson(Map<String, dynamic> json)
-      : id = json.containsKey('id') ? json['id'] : 0,
-        name = json.containsKey('name') ? json['name'] : '',
-        username = json['username'],
-        created = DateTime.parse(json['created']),
-        updated = DateTime.parse(json['updated']) {
+    : id = json.containsKey('id') ? json['id'] : 0,
+      name = json.containsKey('name') ? json['name'] : '',
+      username = json['username'],
+      created = DateTime.parse(json['created']),
+      updated = DateTime.parse(json['updated']) {
     if (json.containsKey('settings')) {
       this.settings = UserSettings.fromJson(json['settings']);
     }
@@ -118,13 +118,13 @@ class User {
   }
 
   toJSON() => {
-        'id': id,
-        'name': name,
-        'username': username,
-        'created': created.toUtc().toIso8601String(),
-        'updated': updated.toUtc().toIso8601String(),
-        'user_settings': settings?.toJson(),
-      };
+    'id': id,
+    'name': name,
+    'username': username,
+    'created': created.toUtc().toIso8601String(),
+    'updated': updated.toUtc().toIso8601String(),
+    'user_settings': settings?.toJson(),
+  };
 
   String avatarUrl(BuildContext context) {
     return VikunjaGlobal.of(context).client.base + "/avatar/${this.username}";

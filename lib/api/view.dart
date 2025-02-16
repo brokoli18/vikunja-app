@@ -27,11 +27,13 @@ class ProjectViewAPIService extends APIService implements ProjectViewService {
   Future<ProjectView?> update(ProjectView view) {
     print(view.toJSON());
     return client
-        .post('/projects/${view.projectId}/views/${view.id}',
-            body: view.toJSON())
+        .post(
+          '/projects/${view.projectId}/views/${view.id}',
+          body: view.toJSON(),
+        )
         .then((response) {
-      if (response == null) return null;
-      return ProjectView.fromJson(response.body);
-    });
+          if (response == null) return null;
+          return ProjectView.fromJson(response.body);
+        });
   }
 }

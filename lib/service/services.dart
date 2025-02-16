@@ -30,7 +30,7 @@ enum TaskServiceOptionSortBy {
   percent_done,
   uid,
   created,
-  updated
+  updated,
 }
 
 enum TaskServiceOptionOrderBy { asc, desc }
@@ -46,7 +46,7 @@ enum TaskServiceOptionFilterComparator {
   less,
   less_equals,
   like,
-  enum_in
+  enum_in,
 }
 
 enum TaskServiceOptionFilterConcat { and, or }
@@ -79,32 +79,45 @@ class TaskServiceOption<T> {
 }
 
 final List<TaskServiceOption> defaultOptions = [
-  TaskServiceOption<TaskServiceOptionSortBy>("sort_by",
-      [TaskServiceOptionSortBy.due_date, TaskServiceOptionSortBy.id]),
+  TaskServiceOption<TaskServiceOptionSortBy>("sort_by", [
+    TaskServiceOptionSortBy.due_date,
+    TaskServiceOptionSortBy.id,
+  ]),
   TaskServiceOption<TaskServiceOptionOrderBy>(
-      "order_by", TaskServiceOptionOrderBy.asc),
-  TaskServiceOption<TaskServiceOptionFilterBy>("filter_by",
-      [TaskServiceOptionFilterBy.done, TaskServiceOptionFilterBy.due_date]),
-  TaskServiceOption<TaskServiceOptionFilterValue>("filter_value",
-      [TaskServiceOptionFilterValue.enum_false, '1970-01-01T00:00:00.000Z']),
+    "order_by",
+    TaskServiceOptionOrderBy.asc,
+  ),
+  TaskServiceOption<TaskServiceOptionFilterBy>("filter_by", [
+    TaskServiceOptionFilterBy.done,
+    TaskServiceOptionFilterBy.due_date,
+  ]),
+  TaskServiceOption<TaskServiceOptionFilterValue>("filter_value", [
+    TaskServiceOptionFilterValue.enum_false,
+    '1970-01-01T00:00:00.000Z',
+  ]),
   TaskServiceOption<TaskServiceOptionFilterComparator>("filter_comparator", [
     TaskServiceOptionFilterComparator.equals,
-    TaskServiceOptionFilterComparator.greater
+    TaskServiceOptionFilterComparator.greater,
   ]),
   TaskServiceOption<TaskServiceOptionFilterConcat>(
-      "filter_concat", TaskServiceOptionFilterConcat.and),
+    "filter_concat",
+    TaskServiceOptionFilterConcat.and,
+  ),
 ];
 
 class TaskServiceOptions {
   List<TaskServiceOption> options = [];
 
-  TaskServiceOptions(
-      {List<TaskServiceOption>? newOptions, bool clearOther = false}) {
+  TaskServiceOptions({
+    List<TaskServiceOption>? newOptions,
+    bool clearOther = false,
+  }) {
     if (!clearOther) options = new List<TaskServiceOption>.from(defaultOptions);
     if (newOptions != null) {
       for (TaskServiceOption custom_option in newOptions) {
-        int index =
-            options.indexWhere((element) => element.name == custom_option.name);
+        int index = options.indexWhere(
+          (element) => element.name == custom_option.name,
+        );
         if (index > -1) {
           options.removeAt(index);
         } else {
@@ -168,13 +181,17 @@ abstract class TaskService {
 
   Future<List<Task>?> getAll();
 
-  Future<Response?> getAllByProject(int projectId,
-      [Map<String, List<String>> queryParameters]);
+  Future<Response?> getAllByProject(
+    int projectId, [
+    Map<String, List<String>> queryParameters,
+  ]);
 
   @deprecated
   Future<List<Task>?> getByOptions(TaskServiceOptions options);
-  Future<List<Task>?> getByFilterString(String filterString,
-      [Map<String, List<String>> queryParameters]);
+  Future<List<Task>?> getByFilterString(
+    String filterString, [
+    Map<String, List<String>> queryParameters,
+  ]);
 
   int get maxPages;
 }
@@ -188,15 +205,22 @@ abstract class BucketService {
 
   Future<Bucket?> add(int listId, int viewId, Bucket bucket);
 
-  Future<Response?> getAllByList(int listId, int viewId,
-      [Map<String, List<String>> queryParameters]);
+  Future<Response?> getAllByList(
+    int listId,
+    int viewId, [
+    Map<String, List<String>> queryParameters,
+  ]);
 
   int get maxPages;
 }
 
 abstract class UserService {
-  Future<UserTokenPair> login(String username, String password,
-      {bool rememberMe = false, String totp});
+  Future<UserTokenPair> login(
+    String username,
+    String password, {
+    bool rememberMe = false,
+    String totp,
+  });
 
   Future<UserTokenPair?> register(String username, email, password);
 
@@ -297,7 +321,9 @@ class SettingsManager {
 
   Future<void> setLandingPageOnlyDueDateTasks(bool value) {
     return _storage.write(
-        key: "landing-page-due-date-tasks", value: value ? "1" : "0");
+      key: "landing-page-due-date-tasks",
+      value: value ? "1" : "0",
+    );
   }
 
   Future<String?> getVersionNotifications() {
@@ -316,7 +342,9 @@ class SettingsManager {
 
   Future<void> setWorkmanagerDuration(Duration duration) {
     return _storage.write(
-        key: "workmanager-duration", value: duration.inMinutes.toString());
+      key: "workmanager-duration",
+      value: duration.inMinutes.toString(),
+    );
   }
 
   Future<List<String>?> getPastServers() async {
@@ -337,7 +365,9 @@ class SettingsManager {
 
   Future<void> setExpandedProjects(List<int>? expandedProjects) {
     return _storage.write(
-        key: "expanded-projects", value: jsonEncode(expandedProjects));
+      key: "expanded-projects",
+      value: jsonEncode(expandedProjects),
+    );
   }
 
   Future<FlutterThemeMode> getThemeMode() async {
@@ -361,14 +391,10 @@ class SettingsManager {
 
   Future<void> setThemeMode(FlutterThemeMode newMode) async {
     await _storage.write(
-        key: "theme_mode", value: newMode.toString().split('.').last);
+      key: "theme_mode",
+      value: newMode.toString().split('.').last,
+    );
   }
 }
 
-enum FlutterThemeMode {
-  system,
-  light,
-  dark,
-  materialYouLight,
-  materialYouDark,
-}
+enum FlutterThemeMode { system, light, dark, materialYouLight, materialYouDark }

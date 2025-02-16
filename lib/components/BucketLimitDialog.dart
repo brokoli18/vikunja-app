@@ -36,15 +36,17 @@ class _BucketLimitDialogState extends State<BucketLimitDialog> {
                   inputFormatters: <TextInputFormatter>[
                     FilteringTextInputFormatter.digitsOnly,
                   ],
-                  onSubmitted: (text) =>
-                      Navigator.of(context).pop(int.parse(text)),
+                  onSubmitted:
+                      (text) => Navigator.of(context).pop(int.parse(text)),
                 ),
               ),
               Column(
                 children: <Widget>[
                   IconButton(
-                    onPressed: () =>
-                        _controller.text = '${int.parse(_controller.text) + 1}',
+                    onPressed:
+                        () =>
+                            _controller.text =
+                                '${int.parse(_controller.text) + 1}',
                     icon: Icon(Icons.expand_less),
                   ),
                   IconButton(
@@ -70,10 +72,10 @@ class _BucketLimitDialogState extends State<BucketLimitDialog> {
           child: Text('Remove Limit'),
         ),
         TextButton(
-          onPressed: () =>
-              Navigator.of(context).pop(int.parse(_controller.text)),
+          onPressed:
+              () => Navigator.of(context).pop(int.parse(_controller.text)),
           child: Text('Done'),
-        )
+        ),
       ],
     );
   }

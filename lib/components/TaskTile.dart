@@ -26,7 +26,7 @@ class TaskTile extends StatefulWidget {
     this.showInfo = false,
     this.onMarkedAsDone,
   }) : super(key: key);
-/*
+  /*
   @override
   TaskTileState createState() {
     return new TaskTileState(this.task, this.loading);
@@ -45,16 +45,23 @@ Widget? _buildTaskSubtitle(Task? task, bool showInfo, BuildContext context) {
   List<TextSpan> texts = [];
 
   if (showInfo && task.hasDueDate) {
-    texts.add(TextSpan(
+    texts.add(
+      TextSpan(
         text: "Due " + durationToHumanReadable(durationUntilDue!),
-        style: durationUntilDue.isNegative
-            ? TextStyle(color: Colors.red)
-            : Theme.of(context).textTheme.bodyMedium));
+        style:
+            durationUntilDue.isNegative
+                ? TextStyle(color: Colors.red)
+                : Theme.of(context).textTheme.bodyMedium,
+      ),
+    );
   }
   if (task.priority != null && task.priority != 0) {
-    texts.add(TextSpan(
+    texts.add(
+      TextSpan(
         text: " !" + priorityToString(task.priority),
-        style: TextStyle(color: Colors.orange)));
+        style: TextStyle(color: Colors.orange),
+      ),
+    );
   }
 
   //if(texts.isEmpty && task.description.isNotEmpty) {
@@ -81,91 +88,109 @@ class TaskTileState extends State<TaskTile> with AutomaticKeepAliveClientMixin {
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
           child: SizedBox(
-              height: Checkbox.width,
-              width: Checkbox.width,
-              child: CircularProgressIndicator(
-                strokeWidth: 2.0,
-              )),
+            height: Checkbox.width,
+            width: Checkbox.width,
+            child: CircularProgressIndicator(strokeWidth: 2.0),
+          ),
         ),
         title: Text(_currentTask.title),
-        subtitle: _currentTask.description.isEmpty
-            ? null
-            : HtmlWidget(_currentTask.description),
-        trailing: IconButton(
-          icon: Icon(Icons.edit),
-          onPressed: () {},
-        ),
+        subtitle:
+            _currentTask.description.isEmpty
+                ? null
+                : HtmlWidget(_currentTask.description),
+        trailing: IconButton(icon: Icon(Icons.edit), onPressed: () {}),
       );
     }
     return IntrinsicHeight(
-        child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      Container(
-        width: 4.0, // Adjust the width of the red line
-        color: widget.task.color,
-        //margin: EdgeInsets.only(left: 10.0),
-      ),
-      Flexible(
-          child: ListTile(
-        onTap: () {
-          showModalBottomSheet<void>(
-              context: context,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(10.0)),
-              ),
-              builder: (BuildContext context) {
-                return TaskBottomSheet(
-                    task: widget.task,
-                    onEdit: widget.onEdit,
-                    taskState: taskState);
-              });
-        },
-        title: widget.showInfo
-            ? RichText(
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                text: TextSpan(
-                  text: null,
-                  children: <TextSpan>[
-                    // TODO: get list name of task
-                    //TextSpan(text: widget.task.list.title+" - ", style: TextStyle(color: Colors.grey)),
-                    TextSpan(text: widget.task.title),
-                  ],
-                  style: TextStyle(
-                    color: Theme.of(context).brightness == Brightness.dark
-                        ? Colors.white
-                        : Colors.black,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Container(
+            width: 4.0, // Adjust the width of the red line
+            color: widget.task.color,
+            //margin: EdgeInsets.only(left: 10.0),
+          ),
+          Flexible(
+            child: ListTile(
+              onTap: () {
+                showModalBottomSheet<void>(
+                  context: context,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(10.0),
+                    ),
                   ),
-                ))
-            : Text(
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                _currentTask.title),
-        subtitle: _buildTaskSubtitle(widget.task, widget.showInfo, context),
-        leading: Checkbox(
-          value: _currentTask.done,
-          onChanged: (bool? newValue) {
-            _change(newValue);
-          },
-        ),
-        trailing: IconButton(
-            icon: Icon(Icons.edit),
-            onPressed: () {
-              Navigator.push<Task>(
+                  builder: (BuildContext context) {
+                    return TaskBottomSheet(
+                      task: widget.task,
+                      onEdit: widget.onEdit,
+                      taskState: taskState,
+                    );
+                  },
+                );
+              },
+              title:
+                  widget.showInfo
+                      ? RichText(
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        text: TextSpan(
+                          text: null,
+                          children: <TextSpan>[
+                            // TODO: get list name of task
+                            //TextSpan(text: widget.task.list.title+" - ", style: TextStyle(color: Colors.grey)),
+                            TextSpan(text: widget.task.title),
+                          ],
+                          style: TextStyle(
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.white
+                                    : Colors.black,
+                          ),
+                        ),
+                      )
+                      : Text(
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        _currentTask.title,
+                      ),
+              subtitle: _buildTaskSubtitle(
+                widget.task,
+                widget.showInfo,
                 context,
-                MaterialPageRoute(
-                  builder: (buildContext) => TaskEditPage(
-                    task: _currentTask,
-                    taskState: taskState,
-                  ),
-                ),
-              )
-                  .then((task) => setState(() {
-                        if (task != null) _currentTask = task;
-                      }))
-                  .whenComplete(() => widget.onEdit());
-            }),
-      ))
-    ]));
+              ),
+              leading: Checkbox(
+                value: _currentTask.done,
+                onChanged: (bool? newValue) {
+                  _change(newValue);
+                },
+              ),
+              trailing: IconButton(
+                icon: Icon(Icons.edit),
+                onPressed: () {
+                  Navigator.push<Task>(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (buildContext) => TaskEditPage(
+                                task: _currentTask,
+                                taskState: taskState,
+                              ),
+                        ),
+                      )
+                      .then(
+                        (task) => setState(() {
+                          if (task != null) _currentTask = task;
+                        }),
+                      )
+                      .whenComplete(() => widget.onEdit());
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   void _change(bool? value) async {
@@ -182,12 +207,10 @@ class TaskTileState extends State<TaskTile> with AutomaticKeepAliveClientMixin {
   }
 
   Future<Task?> _updateTask(Task task, bool checked) {
-    return Provider.of<ProjectProvider>(context, listen: false).updateTask(
-      context: context,
-      task: task.copyWith(
-        done: checked,
-      ),
-    );
+    return Provider.of<ProjectProvider>(
+      context,
+      listen: false,
+    ).updateTask(context: context, task: task.copyWith(done: checked));
   }
 
   @override

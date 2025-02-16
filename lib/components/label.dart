@@ -6,17 +6,12 @@ class LabelComponent extends StatelessWidget {
   final VoidCallback? onDelete;
 
   const LabelComponent({Key? key, required this.label, this.onDelete})
-      : super(key: key);
+    : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Chip(
-      label: Text(
-        label.title,
-        style: TextStyle(
-          color: label.textColor,
-        ),
-      ),
+      label: Text(label.title, style: TextStyle(color: label.textColor)),
       backgroundColor: label.color,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(4)),
@@ -30,11 +25,7 @@ class LabelComponent extends StatelessWidget {
           color: Color.fromARGB(50, 0, 0, 0),
           shape: BoxShape.circle,
         ),
-        child: Icon(
-          Icons.close,
-          color: label.textColor,
-          size: 15,
-        ),
+        child: Icon(Icons.close, color: label.textColor, size: 15),
       ),
     );
   }

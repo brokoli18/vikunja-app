@@ -94,22 +94,32 @@ class VikunjaGlobalState extends State<VikunjaGlobal> {
     Workmanager().cancelAll().then((value) {
       settingsManager.getWorkmanagerDuration().then((duration) {
         if (duration.inMinutes > 0) {
-          Workmanager().registerPeriodicTask("update-tasks", "update-tasks",
-              frequency: duration,
-              constraints: Constraints(
-                  networkType: NetworkType.connected, requiresDeviceIdle: true),
-              initialDelay: Duration(seconds: 15),
-              inputData: {
-                "client_token": client.token,
-                "client_base": client.base
-              });
+          Workmanager().registerPeriodicTask(
+            "update-tasks",
+            "update-tasks",
+            frequency: duration,
+            constraints: Constraints(
+              networkType: NetworkType.connected,
+              requiresDeviceIdle: true,
+            ),
+            initialDelay: Duration(seconds: 15),
+            inputData: {
+              "client_token": client.token,
+              "client_base": client.base,
+            },
+          );
         }
 
-        Workmanager().registerPeriodicTask("refresh-token", "refresh-token",
-            frequency: Duration(hours: 12),
-            constraints: Constraints(
-                networkType: NetworkType.connected, requiresDeviceIdle: true),
-            initialDelay: Duration(seconds: 15));
+        Workmanager().registerPeriodicTask(
+          "refresh-token",
+          "refresh-token",
+          frequency: Duration(hours: 12),
+          constraints: Constraints(
+            networkType: NetworkType.connected,
+            requiresDeviceIdle: true,
+          ),
+          initialDelay: Duration(seconds: 15),
+        );
       });
     });
   }
@@ -118,9 +128,9 @@ class VikunjaGlobalState extends State<VikunjaGlobal> {
   void initState() {
     super.initState();
     _client = Client(snackbarKey);
-    settingsManager
-        .getIgnoreCertificates()
-        .then((value) => client.reloadIgnoreCerts(value == "1"));
+    settingsManager.getIgnoreCertificates().then(
+      (value) => client.reloadIgnoreCerts(value == "1"),
+    );
     _newUserService = UserAPIService(client);
     _loadCurrentUser();
     tz.initializeTimeZones();
@@ -160,7 +170,7 @@ class VikunjaGlobalState extends State<VikunjaGlobal> {
   }
 
   void logoutUser(BuildContext context) async {
-//    _storage.deleteAll().then((_) {
+    //    _storage.deleteAll().then((_) {
     var userId = await _storage.read(key: "currentUser");
     await _storage.delete(key: userId!); //delete token
     await _storage.delete(key: "${userId}_base");
@@ -247,7 +257,7 @@ class VikunjaGlobalInherited extends InheritedWidget {
   final VikunjaGlobalState data;
 
   VikunjaGlobalInherited({Key? key, required this.data, required Widget child})
-      : super(key: key, child: child);
+    : super(key: key, child: child);
 
   @override
   bool updateShouldNotify(VikunjaGlobalInherited oldWidget) {

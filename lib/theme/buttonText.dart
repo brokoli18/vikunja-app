@@ -3,10 +3,7 @@ import 'package:flutter/material.dart';
 class VikunjaButtonText extends StatelessWidget {
   final String text;
 
-  const VikunjaButtonText(
-    this.text, {
-    Key? key,
-  }) : super(key: key);
+  const VikunjaButtonText(this.text, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -14,8 +11,9 @@ class VikunjaButtonText extends StatelessWidget {
     return Text(
       text,
       style: TextStyle(
-          color: Theme.of(context).primaryTextTheme.labelMedium?.color,
-          fontWeight: FontWeight.w600),
+        color: Theme.of(context).primaryTextTheme.labelMedium?.color,
+        fontWeight: FontWeight.w600,
+      ),
     );
   }
 }

@@ -19,34 +19,31 @@ class FancyButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: onPressed,
-      child: SizedBox(
-        width: width,
-        child: Center(child: child),
-      ),
+      child: SizedBox(width: width, child: Center(child: child)),
     );
     return Padding(
-        padding: vStandardVerticalPadding,
-        child: Container(
-          width: width,
-          height: height,
-          decoration: BoxDecoration(boxShadow: [
+      padding: vStandardVerticalPadding,
+      child: Container(
+        width: width,
+        height: height,
+        decoration: BoxDecoration(
+          boxShadow: [
             BoxShadow(
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? vButtonShadowDark
-                  : vButtonShadow,
+              color:
+                  Theme.of(context).brightness == Brightness.dark
+                      ? vButtonShadowDark
+                      : vButtonShadow,
               offset: Offset(-5, 5),
               blurRadius: 10,
             ),
-          ]),
-          child: Material(
-            borderRadius: BorderRadius.circular(3),
-            color: Theme.of(context).colorScheme.primary,
-            child: InkWell(
-                onTap: onPressed,
-                child: Center(
-                  child: child,
-                )),
-          ),
-        ));
+          ],
+        ),
+        child: Material(
+          borderRadius: BorderRadius.circular(3),
+          color: Theme.of(context).colorScheme.primary,
+          child: InkWell(onTap: onPressed, child: Center(child: child)),
+        ),
+      ),
+    );
   }
 }

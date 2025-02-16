@@ -19,14 +19,13 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext ctx) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Register'),
-        ),
-        body: Builder(
-          builder: (BuildContext context) => SafeArea(
-            top: false,
-            bottom: false,
-            child: Form(
+      appBar: AppBar(title: Text('Register')),
+      body: Builder(
+        builder:
+            (BuildContext context) => SafeArea(
+              top: false,
+              bottom: false,
+              child: Form(
                 key: _formKey,
                 child: ListView(
                   padding: const EdgeInsets.all(16),
@@ -39,8 +38,9 @@ class _RegisterPageState extends State<RegisterPage> {
                           return isUrl(address) ? null : 'Invalid URL';
                         },
                         decoration: new InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'Server Address'),
+                          border: OutlineInputBorder(),
+                          labelText: 'Server Address',
+                        ),
                       ),
                     ),
                     Padding(
@@ -53,8 +53,9 @@ class _RegisterPageState extends State<RegisterPage> {
                               : 'Please specify a username';
                         },
                         decoration: new InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'Username'),
+                          border: OutlineInputBorder(),
+                          labelText: 'Username',
+                        ),
                       ),
                     ),
                     Padding(
@@ -67,8 +68,9 @@ class _RegisterPageState extends State<RegisterPage> {
                               : 'Email adress is invalid';
                         },
                         decoration: new InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'Email Address'),
+                          border: OutlineInputBorder(),
+                          labelText: 'Email Address',
+                        ),
                       ),
                     ),
                     Padding(
@@ -82,8 +84,9 @@ class _RegisterPageState extends State<RegisterPage> {
                               : 'Please use at least 8 characters';
                         },
                         decoration: new InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'Password'),
+                          border: OutlineInputBorder(),
+                          labelText: 'Password',
+                        ),
                         obscureText: true,
                       ),
                     ),
@@ -96,15 +99,18 @@ class _RegisterPageState extends State<RegisterPage> {
                               : 'Passwords don\'t match.';
                         },
                         decoration: new InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'Repeat Password'),
+                          border: OutlineInputBorder(),
+                          labelText: 'Repeat Password',
+                        ),
                         obscureText: true,
                       ),
                     ),
                     Builder(
-                        builder: (context) => FancyButton(
-                              onPressed: !_loading
-                                  ? () {
+                      builder:
+                          (context) => FancyButton(
+                            onPressed:
+                                !_loading
+                                    ? () {
                                       if (_formKey.currentState!.validate()) {
                                         Form.of(context).save();
                                         _registerUser(context);
@@ -112,39 +118,53 @@ class _RegisterPageState extends State<RegisterPage> {
                                         print("awhat");
                                       }
                                     }
-                                  : () => null,
-                              child: _loading
-                                  ? CircularProgressIndicator()
-                                  : VikunjaButtonText('Register'),
-                            )),
+                                    : () => null,
+                            child:
+                                _loading
+                                    ? CircularProgressIndicator()
+                                    : VikunjaButtonText('Register'),
+                          ),
+                    ),
                   ],
-                )),
-          ),
-        ));
+                ),
+              ),
+            ),
+      ),
+    );
   }
 
   _registerUser(BuildContext context) async {
     setState(() => _loading = true);
     try {
       var vGlobal = VikunjaGlobal.of(context);
-      var newUserLoggedIn =
-          await vGlobal.newUserService?.register(_username!, _email, _password);
+      var newUserLoggedIn = await vGlobal.newUserService?.register(
+        _username!,
+        _email,
+        _password,
+      );
       if (newUserLoggedIn != null)
-        vGlobal.changeUser(newUserLoggedIn.user!,
-            token: newUserLoggedIn.token, base: _server!);
+        vGlobal.changeUser(
+          newUserLoggedIn.user!,
+          token: newUserLoggedIn.token,
+          base: _server!,
+        );
     } catch (ex) {
       showDialog(
-          context: context,
-          builder: (context) => new AlertDialog(
-                title: Text(
-                    'Registration failed! Please check your server url and credentials. ' +
-                        ex.toString()),
-                actions: <Widget>[
-                  TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: const Text('Close'))
-                ],
-              ));
+        context: context,
+        builder:
+            (context) => new AlertDialog(
+              title: Text(
+                'Registration failed! Please check your server url and credentials. ' +
+                    ex.toString(),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('Close'),
+                ),
+              ],
+            ),
+      );
     } finally {
       setState(() {
         _loading = false;

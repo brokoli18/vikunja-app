@@ -30,13 +30,12 @@ class _ProjectOverviewPageState extends State<ProjectOverviewPage>
   @override
   void afterFirstLayout(BuildContext context) {
     _loadProjects();
-    VikunjaGlobal.of(context)
-        .settingsManager
-        .getExpandedProjects()
-        .then((val) => setState(() {
-              expandedList = val ?? [];
-              print("Setting expanded list in setup to $expandedList");
-            }));
+    VikunjaGlobal.of(context).settingsManager.getExpandedProjects().then(
+      (val) => setState(() {
+        expandedList = val ?? [];
+        print("Setting expanded list in setup to $expandedList");
+      }),
+    );
   }
 
   void updateExpandedList() {
@@ -72,37 +71,41 @@ class _ProjectOverviewPageState extends State<ProjectOverviewPage>
       }
     }
 
-    return Column(children: [
-      ListTile(
-        onTap: () {
-          Provider.of<ProjectProvider>(context, listen: false);
-          openList(context, project);
-        },
-        contentPadding: insets,
-        leading: IconButton(
-          disabledColor: Theme.of(context).unselectedWidgetColor,
-          icon: icon,
-          onPressed: !no_children
-              ? () {
-                  setState(() {
-                    if (expanded)
-                      removeFromExpandedList(project.id);
-                    else
-                      addToExpandedList(project.id);
-                  });
-                }
-              : null,
+    return Column(
+      children: [
+        ListTile(
+          onTap: () {
+            Provider.of<ProjectProvider>(context, listen: false);
+            openList(context, project);
+          },
+          contentPadding: insets,
+          leading: IconButton(
+            disabledColor: Theme.of(context).unselectedWidgetColor,
+            icon: icon,
+            onPressed:
+                !no_children
+                    ? () {
+                      setState(() {
+                        if (expanded)
+                          removeFromExpandedList(project.id);
+                        else
+                          addToExpandedList(project.id);
+                      });
+                    }
+                    : null,
+          ),
+          title: new Text(project.title),
+          //onTap: () => _onSelectItem(i),
         ),
-        title: new Text(project.title),
-        //onTap: () => _onSelectItem(i),
-      ),
-      ...?children
-    ]);
+        ...?children,
+      ],
+    );
   }
 
   List<Widget> addProjectChildren(Project project, level) {
-    Iterable<Project> children =
-        _projects.where((element) => element.parentProjectId == project.id);
+    Iterable<Project> children = _projects.where(
+      (element) => element.parentProjectId == project.id,
+    );
     project.subprojects = children;
     List<Widget> widgets = [];
     children.forEach((element) {
@@ -121,33 +124,38 @@ class _ProjectOverviewPageState extends State<ProjectOverviewPage>
 
     if (_selectedDrawerIndex > -1) {
       return new WillPopScope(
-          child: ListPage(project: _projects[_selectedDrawerIndex]),
-          onWillPop: () async {
-            setState(() {
-              _selectedDrawerIndex = -2;
-            });
-            return false;
+        child: ListPage(project: _projects[_selectedDrawerIndex]),
+        onWillPop: () async {
+          setState(() {
+            _selectedDrawerIndex = -2;
           });
+          return false;
+        },
+      );
     }
 
     return Scaffold(
-      body: this._loading
-          ? Center(child: CircularProgressIndicator())
-          : RefreshIndicator(
-              child: ListView(
+      body:
+          this._loading
+              ? Center(child: CircularProgressIndicator())
+              : RefreshIndicator(
+                child: ListView(
                   padding: EdgeInsets.zero,
                   children:
-                      ListTile.divideTiles(context: context, tiles: projectList)
-                          .toList()),
-              onRefresh: _loadProjects,
-            ),
+                      ListTile.divideTiles(
+                        context: context,
+                        tiles: projectList,
+                      ).toList(),
+                ),
+                onRefresh: _loadProjects,
+              ),
       appBar: AppBar(
         title: Text("Projects"),
         actions: [
           IconButton(
             icon: Icon(Icons.add),
             onPressed: () => _addProjectDialog(context),
-          )
+          ),
         ],
       ),
     );
@@ -164,12 +172,16 @@ class _ProjectOverviewPageState extends State<ProjectOverviewPage>
 
   _addProjectDialog(BuildContext context) {
     showDialog(
-        context: context,
-        builder: (_) => AddDialog(
-              onAdd: (name) => _addProject(name, context),
-              decoration: new InputDecoration(
-                  labelText: 'Project', hintText: 'eg. Personal Project'),
-            ));
+      context: context,
+      builder:
+          (_) => AddDialog(
+            onAdd: (name) => _addProject(name, context),
+            decoration: new InputDecoration(
+              labelText: 'Project',
+              hintText: 'eg. Personal Project',
+            ),
+          ),
+    );
   }
 
   _addProject(String name, BuildContext context) {
@@ -178,14 +190,13 @@ class _ProjectOverviewPageState extends State<ProjectOverviewPage>
       return;
     }
 
-    VikunjaGlobal.of(context)
-        .projectService
-        .create(Project(title: name, owner: currentUser))
-        .then((_) {
+    VikunjaGlobal.of(
+      context,
+    ).projectService.create(Project(title: name, owner: currentUser)).then((_) {
       _loadProjects();
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('The project was created successfully!'),
-      ));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('The project was created successfully!')),
+      );
     });
   }
 }

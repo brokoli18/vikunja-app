@@ -9,9 +9,9 @@ class LabelTaskAPIService extends APIService implements LabelTaskService {
 
   @override
   Future<Label?> create(LabelTask lt) async {
-    return client
-        .put('/tasks/${lt.task!.id}/labels', body: lt.toJSON())
-        .then((response) {
+    return client.put('/tasks/${lt.task!.id}/labels', body: lt.toJSON()).then((
+      response,
+    ) {
       if (response == null) return null;
       return Label.fromJson(response.body);
     });
@@ -19,9 +19,9 @@ class LabelTaskAPIService extends APIService implements LabelTaskService {
 
   @override
   Future<Label?> delete(LabelTask lt) async {
-    return client
-        .delete('/tasks/${lt.task!.id}/labels/${lt.label.id}')
-        .then((response) {
+    return client.delete('/tasks/${lt.task!.id}/labels/${lt.label.id}').then((
+      response,
+    ) {
       if (response == null) return null;
       return Label.fromJson(response.body);
     });

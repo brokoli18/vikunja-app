@@ -19,20 +19,30 @@ void main() {
       DateTime.fromMillisecondsSinceEpoch(1544612400 * 1000),
     ]);
     expect(
-        task.dueDate, DateTime.fromMillisecondsSinceEpoch(1543834800 * 1000));
+      task.dueDate,
+      DateTime.fromMillisecondsSinceEpoch(1543834800 * 1000),
+    );
     expect(task.repeatAfter, Duration(seconds: 3600));
     expect(task.parentTaskId, 0);
     expect(task.priority, 100);
     expect(
-        task.startDate, DateTime.fromMillisecondsSinceEpoch(1543834800 * 1000));
+      task.startDate,
+      DateTime.fromMillisecondsSinceEpoch(1543834800 * 1000),
+    );
     expect(
-        task.endDate, DateTime.fromMillisecondsSinceEpoch(1543835000 * 1000));
+      task.endDate,
+      DateTime.fromMillisecondsSinceEpoch(1543835000 * 1000),
+    );
     expect(task.labels, null);
     expect(task.subtasks, null);
     expect(
-        task.created, DateTime.fromMillisecondsSinceEpoch(1542465818 * 1000));
+      task.created,
+      DateTime.fromMillisecondsSinceEpoch(1542465818 * 1000),
+    );
     expect(
-        task.updated, DateTime.fromMillisecondsSinceEpoch(1552771527 * 1000));
+      task.updated,
+      DateTime.fromMillisecondsSinceEpoch(1552771527 * 1000),
+    );
   });
   test('Check encoding with reminder dates as null', () {
     final String json =
@@ -46,19 +56,29 @@ void main() {
     expect(task.done, true);
     expect(task.reminderDates, null);
     expect(
-        task.dueDate, DateTime.fromMillisecondsSinceEpoch(1543834800 * 1000));
+      task.dueDate,
+      DateTime.fromMillisecondsSinceEpoch(1543834800 * 1000),
+    );
     expect(task.repeatAfter, Duration(seconds: 3600));
     expect(task.parentTaskId, 0);
     expect(task.priority, 100);
     expect(
-        task.startDate, DateTime.fromMillisecondsSinceEpoch(1543834800 * 1000));
+      task.startDate,
+      DateTime.fromMillisecondsSinceEpoch(1543834800 * 1000),
+    );
     expect(
-        task.endDate, DateTime.fromMillisecondsSinceEpoch(1543835000 * 1000));
+      task.endDate,
+      DateTime.fromMillisecondsSinceEpoch(1543835000 * 1000),
+    );
     expect(task.labels, null);
     expect(task.subtasks, null);
     expect(
-        task.created, DateTime.fromMillisecondsSinceEpoch(1542465818 * 1000));
+      task.created,
+      DateTime.fromMillisecondsSinceEpoch(1542465818 * 1000),
+    );
     expect(
-        task.updated, DateTime.fromMillisecondsSinceEpoch(1552771527 * 1000));
+      task.updated,
+      DateTime.fromMillisecondsSinceEpoch(1552771527 * 1000),
+    );
   });
 }

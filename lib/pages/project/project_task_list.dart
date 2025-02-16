@@ -67,71 +67,77 @@ class _ListPageState extends State<ListPage> {
   Widget build(BuildContext context) {
     //return Text("test");
     taskState = Provider.of<ProjectProvider>(context, listen: false);
-    _kanban = KanbanClass(context, nullSetState, _onViewTapped, _addItemDialog,
-        _project, _project.views[_viewIndex]);
+    _kanban = KanbanClass(
+      context,
+      nullSetState,
+      _onViewTapped,
+      _addItemDialog,
+      _project,
+      _project.views[_viewIndex],
+    );
 
     Widget body;
 
     switch (taskState.pageStatus) {
       case PageStatus.built:
-        body = new Stack(children: [
-          ListView(),
-          Center(
-            child: CircularProgressIndicator(),
-          )
-        ]);
+        body = new Stack(
+          children: [ListView(), Center(child: CircularProgressIndicator())],
+        );
         break;
       case PageStatus.loading:
-        body = new Stack(children: [
-          ListView(),
-          Center(
-            child: CircularProgressIndicator(),
-          )
-        ]);
+        body = new Stack(
+          children: [ListView(), Center(child: CircularProgressIndicator())],
+        );
         break;
       case PageStatus.error:
-        body = new Stack(children: [
-          ListView(),
-          Center(child: Text("There was an error loading this view"))
-        ]);
+        body = new Stack(
+          children: [
+            ListView(),
+            Center(child: Text("There was an error loading this view")),
+          ],
+        );
         break;
       case PageStatus.success:
-        body = taskState.tasks.length > 0 ||
-                taskState.buckets.length > 0 ||
-                _project.subprojects!.length > 0
-            ? ListenableProvider.value(
-                value: taskState,
-                child: Theme(
-                  data: (ThemeData base) {
-                    return base.copyWith(
-                      chipTheme: base.chipTheme.copyWith(
-                        labelPadding: EdgeInsets.symmetric(horizontal: 2),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(5)),
+        body =
+            taskState.tasks.length > 0 ||
+                    taskState.buckets.length > 0 ||
+                    _project.subprojects!.length > 0
+                ? ListenableProvider.value(
+                  value: taskState,
+                  child: Theme(
+                    data: (ThemeData base) {
+                      return base.copyWith(
+                        chipTheme: base.chipTheme.copyWith(
+                          labelPadding: EdgeInsets.symmetric(horizontal: 2),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(5)),
+                          ),
                         ),
-                      ),
-                    );
-                  }(Theme.of(context)),
-                  child: () {
-                    switch (_project.views[_viewIndex].viewKind) {
-                      case "list":
-                        return _listView(context);
-                      case "kanban":
-                        return _kanban.kanbanView();
-                      default:
-                        return Text("Not implemented");
-                    }
-                  }(),
-                ),
-              )
-            : Stack(children: [
-                ListView(),
-                Center(child: Text('This project is empty.'))
-              ]);
+                      );
+                    }(Theme.of(context)),
+                    child: () {
+                      switch (_project.views[_viewIndex].viewKind) {
+                        case "list":
+                          return _listView(context);
+                        case "kanban":
+                          return _kanban.kanbanView();
+                        default:
+                          return Text("Not implemented");
+                      }
+                    }(),
+                  ),
+                )
+                : Stack(
+                  children: [
+                    ListView(),
+                    Center(child: Text('This project is empty.')),
+                  ],
+                );
         break;
       case PageStatus.empty:
         body = new Stack(
-            children: [ListView(), Center(child: Text("This view is empty"))]);
+          children: [ListView(), Center(child: Text("This view is empty"))],
+        );
         break;
     }
 
@@ -141,13 +147,13 @@ class _ListPageState extends State<ListPage> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.edit),
-            onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ProjectEditPage(
-                    project: _project,
+            onPressed:
+                () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ProjectEditPage(project: _project),
                   ),
-                )).whenComplete(() => _loadList()),
+                ).whenComplete(() => _loadList()),
           ),
         ],
       ),
@@ -156,24 +162,30 @@ class _ListPageState extends State<ListPage> {
           _project.views[_viewIndex].viewKind == "kanban" || _project.id < 0
               ? null
               : Builder(
-                  builder: (context) => FloatingActionButton(
+                builder:
+                    (context) => FloatingActionButton(
                       onPressed: () => _addItemDialog(context),
-                      child: Icon(Icons.add)),
-                ),
-      bottomNavigationBar: _project.views.length >= 2
-          ? BottomNavigationBar(
-              type: BottomNavigationBarType.fixed,
-              items: _project.views
-                  .map((view) => BottomNavigationBarItem(
-                        icon: view.icon,
-                        label: view.title,
-                        tooltip: view.title,
-                      ))
-                  .toList(),
-              currentIndex: _viewIndex,
-              onTap: _onViewTapped,
-            )
-          : null,
+                      child: Icon(Icons.add),
+                    ),
+              ),
+      bottomNavigationBar:
+          _project.views.length >= 2
+              ? BottomNavigationBar(
+                type: BottomNavigationBarType.fixed,
+                items:
+                    _project.views
+                        .map(
+                          (view) => BottomNavigationBarItem(
+                            icon: view.icon,
+                            label: view.title,
+                            tooltip: view.title,
+                          ),
+                        )
+                        .toList(),
+                currentIndex: _viewIndex,
+                onTap: _onViewTapped,
+              )
+              : null,
     );
   }
 
@@ -214,17 +226,19 @@ class _ListPageState extends State<ListPage> {
 
   List<Widget> _buildProjectList() {
     return widget.project.subprojects!
-        .map((subproject) => ListTile(
-              leading: Icon(Icons.list),
-              onTap: () {
-                openList(context, subproject);
-              },
-              title: Text(
-                subproject.title,
-                overflow: TextOverflow.ellipsis,
-                softWrap: false,
-              ),
-            ))
+        .map(
+          (subproject) => ListTile(
+            leading: Icon(Icons.list),
+            onTap: () {
+              openList(context, subproject);
+            },
+            title: Text(
+              subproject.title,
+              overflow: TextOverflow.ellipsis,
+              softWrap: false,
+            ),
+          ),
+        )
         .toList();
   }
 
@@ -261,20 +275,19 @@ class _ListPageState extends State<ListPage> {
         loading: false,
         onEdit: () {},
         onMarkedAsDone: (done) {
-          Provider.of<ProjectProvider>(context, listen: false).updateTask(
-            context: context,
-            task: task.copyWith(done: done),
-          );
+          Provider.of<ProjectProvider>(
+            context,
+            listen: false,
+          ).updateTask(context: context, task: task.copyWith(done: done));
         },
       ),
     );
   }
 
   Future<void> updateDisplayDoneTasks() {
-    return VikunjaGlobal.of(context)
-        .projectService
-        .getDisplayDoneTasks(_project.id)
-        .then((value) {
+    return VikunjaGlobal.of(
+      context,
+    ).projectService.getDisplayDoneTasks(_project.id).then((value) {
       displayDoneTasks = value == "1";
     });
   }
@@ -283,15 +296,14 @@ class _ListPageState extends State<ListPage> {
     return TaskTile(
       task: task,
       loading: true,
-      onEdit: () => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => TaskEditPage(
-            task: task,
-            taskState: taskState,
+      onEdit:
+          () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder:
+                  (context) => TaskEditPage(task: task, taskState: taskState),
+            ),
           ),
-        ),
-      ),
     );
   }
 
@@ -319,29 +331,38 @@ class _ListPageState extends State<ListPage> {
 
   Future<void> _loadTasksForPage(int page) {
     return Provider.of<ProjectProvider>(context, listen: false).loadTasks(
-        context: context,
-        listId: _project.id,
-        page: page,
-        displayDoneTasks: displayDoneTasks);
-  }
-
-  Future<void> _addItemDialog(BuildContext context,
-      [Bucket? bucket, String? taskName]) {
-    return showDialog(
       context: context,
-      builder: (_) => AddDialog(
-        onAdd: (title) => _addItem(title, context, bucket),
-        decoration: InputDecoration(
-          labelText:
-              (bucket != null ? '\'${bucket.title}\': ' : '') + 'New Task Name',
-          hintText: 'eg. Milk',
-        ),
-      ),
+      listId: _project.id,
+      page: page,
+      displayDoneTasks: displayDoneTasks,
     );
   }
 
-  Future<void> _addItem(String title, BuildContext context,
-      [Bucket? bucket]) async {
+  Future<void> _addItemDialog(
+    BuildContext context, [
+    Bucket? bucket,
+    String? taskName,
+  ]) {
+    return showDialog(
+      context: context,
+      builder:
+          (_) => AddDialog(
+            onAdd: (title) => _addItem(title, context, bucket),
+            decoration: InputDecoration(
+              labelText:
+                  (bucket != null ? '\'${bucket.title}\': ' : '') +
+                  'New Task Name',
+              hintText: 'eg. Milk',
+            ),
+          ),
+    );
+  }
+
+  Future<void> _addItem(
+    String title,
+    BuildContext context, [
+    Bucket? bucket,
+  ]) async {
     final currentUser = VikunjaGlobal.of(context).currentUser;
     if (currentUser == null) {
       return;
@@ -356,32 +377,35 @@ class _ListPageState extends State<ListPage> {
     );
     setState(() => _loadingTasks.add(newTask));
     return Provider.of<ProjectProvider>(context, listen: false)
-        .addTask(
-      context: context,
-      newTask: newTask,
-      listId: _project.id,
-    )
+        .addTask(context: context, newTask: newTask, listId: _project.id)
         .then((_) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('The task was added successfully' +
-            (bucket != null ? ' to \'${bucket.title}\'' : '') +
-            '!'),
-      ));
-      setState(() {
-        _loadingTasks.remove(newTask);
-        _loadList();
-      });
-    });
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                'The task was added successfully' +
+                    (bucket != null ? ' to \'${bucket.title}\'' : '') +
+                    '!',
+              ),
+            ),
+          );
+          setState(() {
+            _loadingTasks.remove(newTask);
+            _loadList();
+          });
+        });
   }
 }
 
 openList(BuildContext context, Project project) {
   Provider.of<ProjectProvider>(context, listen: false);
-  Navigator.push(context, MaterialPageRoute(builder: (context) {
-    Provider.of<ProjectProvider>(context, listen: false);
-    return ListPage(
-      project: project,
-    );
-  }));
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) {
+        Provider.of<ProjectProvider>(context, listen: false);
+        return ListPage(project: project);
+      },
+    ),
+  );
   // ListPage(taskList: list)
 }

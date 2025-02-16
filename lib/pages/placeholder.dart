@@ -18,9 +18,11 @@ class PlaceholderPage extends StatelessWidget {
             ),
             Padding(
               padding: EdgeInsets.symmetric(vertical: 10),
-              child: Text('Please select a namespace by tapping the  ☰  icon.',
-                  style: Theme.of(context).textTheme.labelMedium),
-            )
+              child: Text(
+                'Please select a namespace by tapping the  ☰  icon.',
+                style: Theme.of(context).textTheme.labelMedium,
+              ),
+            ),
           ],
         ),
       ),

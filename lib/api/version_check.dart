@@ -44,9 +44,13 @@ class VersionChecker {
         SnackBar snackBar = SnackBar(
           content: Text("New version available: $latest"),
           action: SnackBarAction(
-              label: "View on Github",
-              onPressed: () => launchUrl(Uri.parse(repo),
-                  mode: LaunchMode.externalApplication)),
+            label: "View on Github",
+            onPressed:
+                () => launchUrl(
+                  Uri.parse(repo),
+                  mode: LaunchMode.externalApplication,
+                ),
+          ),
         );
         snackbarKey.currentState?.showSnackBar(snackBar);
       }

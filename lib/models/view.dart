@@ -27,31 +27,40 @@ class ProjectView {
     }
   }
 
-  ProjectView(this.created, this.defaultBucketId, this.doneBucketId, this.id,
-      this.position, this.projectId, this.title, this.updated, this.viewKind);
+  ProjectView(
+    this.created,
+    this.defaultBucketId,
+    this.doneBucketId,
+    this.id,
+    this.position,
+    this.projectId,
+    this.title,
+    this.updated,
+    this.viewKind,
+  );
 
   ProjectView.fromJson(Map<String, dynamic> json)
-      : created = DateTime.parse(json['created']),
-        defaultBucketId = json['default_bucket_id'],
-        doneBucketId = json['done_bucket_id'],
-        id = json['id'],
-        position = json['position'],
-        projectId = json['project_id'],
-        title = json['title'],
-        viewKind = json['view_kind'],
-        updated = DateTime.parse(json['updated']);
+    : created = DateTime.parse(json['created']),
+      defaultBucketId = json['default_bucket_id'],
+      doneBucketId = json['done_bucket_id'],
+      id = json['id'],
+      position = json['position'],
+      projectId = json['project_id'],
+      title = json['title'],
+      viewKind = json['view_kind'],
+      updated = DateTime.parse(json['updated']);
 
   toJSON() => {
-        "created": created.toUtc().toIso8601String(),
-        "default_bucket_id": defaultBucketId,
-        "done_bucket_id": doneBucketId,
-        "id": id,
-        "position": position,
-        "project_id": projectId,
-        "title": title,
-        "updated": updated.toUtc().toIso8601String(),
-        "view_kind": viewKind
-      };
+    "created": created.toUtc().toIso8601String(),
+    "default_bucket_id": defaultBucketId,
+    "done_bucket_id": doneBucketId,
+    "id": id,
+    "position": position,
+    "project_id": projectId,
+    "title": title,
+    "updated": updated.toUtc().toIso8601String(),
+    "view_kind": viewKind,
+  };
 
   ProjectView copyWith({
     DateTime? created, // "created": "string",
@@ -65,14 +74,15 @@ class ProjectView {
     String? viewKind,
   }) {
     return ProjectView(
-        created ?? this.created,
-        defaultBucketId ?? this.defaultBucketId,
-        doneBucketId ?? this.doneBucketId,
-        id ?? this.id,
-        position ?? this.position,
-        projectId ?? this.projectId,
-        title ?? this.title,
-        updated ?? this.updated,
-        viewKind ?? this.viewKind);
+      created ?? this.created,
+      defaultBucketId ?? this.defaultBucketId,
+      doneBucketId ?? this.doneBucketId,
+      id ?? this.id,
+      position ?? this.position,
+      projectId ?? this.projectId,
+      title ?? this.title,
+      updated ?? this.updated,
+      viewKind ?? this.viewKind,
+    );
   }
 }

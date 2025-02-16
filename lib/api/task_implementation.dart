@@ -11,9 +11,9 @@ class TaskAPIService extends APIService implements TaskService {
 
   @override
   Future<Task?> add(int projectId, Task task) {
-    return client
-        .put('/projects/$projectId/tasks', body: task.toJSON())
-        .then((response) {
+    return client.put('/projects/$projectId/tasks', body: task.toJSON()).then((
+      response,
+    ) {
       if (response == null) return null;
       return Task.fromJson(response.body);
     });
@@ -34,9 +34,9 @@ class TaskAPIService extends APIService implements TaskService {
 
   @override
   Future<Task?> update(Task task) {
-    return client
-        .post('/tasks/${task.id}', body: task.toJSON())
-        .then((response) {
+    return client.post('/tasks/${task.id}', body: task.toJSON()).then((
+      response,
+    ) {
       if (response == null) return null;
       return Task.fromJson(response.body);
     });
@@ -58,13 +58,15 @@ class TaskAPIService extends APIService implements TaskService {
 
       for (int i = 0; i < page_n; i++) {
         Map<String, List<String>> paramMap = {
-          "page": [i.toString()]
+          "page": [i.toString()],
         };
-        futureList.add(client.get('/tasks/all', paramMap).then((pageResponse) {
-          convertList(pageResponse?.body, (result) {
-            taskList.add(Task.fromJson(result));
-          });
-        }));
+        futureList.add(
+          client.get('/tasks/all', paramMap).then((pageResponse) {
+            convertList(pageResponse?.body, (result) {
+              taskList.add(Task.fromJson(result));
+            });
+          }),
+        );
       }
       return Future.wait(futureList).then((value) {
         return taskList;
@@ -73,16 +75,19 @@ class TaskAPIService extends APIService implements TaskService {
   }
 
   @override
-  Future<Response?> getAllByProject(int projectId,
-      [Map<String, List<String>>? queryParameters]) {
-    return client
-        .get('/projects/$projectId/tasks', queryParameters)
-        .then((response) {
+  Future<Response?> getAllByProject(
+    int projectId, [
+    Map<String, List<String>>? queryParameters,
+  ]) {
+    return client.get('/projects/$projectId/tasks', queryParameters).then((
+      response,
+    ) {
       return response != null
           ? new Response(
-              convertList(response.body, (result) => Task.fromJson(result)),
-              response.statusCode,
-              response.headers)
+            convertList(response.body, (result) => Task.fromJson(result)),
+            response.statusCode,
+            response.headers,
+          )
           : null;
     });
   }
@@ -101,11 +106,13 @@ class TaskAPIService extends APIService implements TaskService {
   }
 
   @override
-  Future<List<Task>?> getByFilterString(String filterString,
-      [Map<String, List<String>>? queryParameters]) {
+  Future<List<Task>?> getByFilterString(
+    String filterString, [
+    Map<String, List<String>>? queryParameters,
+  ]) {
     Map<String, List<String>> parameters = {
       "filter": [filterString],
-      ...?queryParameters
+      ...?queryParameters,
     };
     print(parameters);
     return client.get('/tasks/all', parameters).then((response) {

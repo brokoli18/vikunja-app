@@ -39,10 +39,10 @@ class LandingPageState extends State<LandingPage> {
 
   Future<void> _updateDefaultList() async {
     return VikunjaGlobal.of(context).newUserService?.getCurrentUser().then(
-          (value) => setState(() {
-            defaultList = value?.settings?.default_project_id;
-          }),
-        );
+      (value) => setState(() {
+        defaultList = value?.settings?.default_project_id;
+      }),
+    );
   }
 
   void handleMethod(List<String> method) {
@@ -60,9 +60,11 @@ class LandingPageState extends State<LandingPage> {
   void scheduleIntent() async {
     try {
       // This is needed when app is already open and quicktile is clicked
-      List<String>? method = (await platform.invokeMethod("isQuickTile", ""))
-          .map<String>((val) => val.toString())
-          .toList();
+      List<String>? method =
+          (await platform.invokeMethod(
+            "isQuickTile",
+            "",
+          )).map<String>((val) => val.toString()).toList();
 
       if (method != null) {
         handleMethod(method);
@@ -93,30 +95,27 @@ class LandingPageState extends State<LandingPage> {
     switch (landingPageStatus) {
       case PageStatus.built:
         _loadList(context);
-        body = new Stack(children: [
-          ListView(),
-          Center(
-            child: CircularProgressIndicator(),
-          )
-        ]);
+        body = new Stack(
+          children: [ListView(), Center(child: CircularProgressIndicator())],
+        );
         break;
       case PageStatus.loading:
-        body = new Stack(children: [
-          ListView(),
-          Center(
-            child: CircularProgressIndicator(),
-          )
-        ]);
+        body = new Stack(
+          children: [ListView(), Center(child: CircularProgressIndicator())],
+        );
         break;
       case PageStatus.error:
-        body = new Stack(children: [
-          ListView(),
-          Center(child: Text("There was an error loading this view"))
-        ]);
+        body = new Stack(
+          children: [
+            ListView(),
+            Center(child: Text("There was an error loading this view")),
+          ],
+        );
         break;
       case PageStatus.empty:
         body = new Stack(
-            children: [ListView(), Center(child: Text("This view is empty"))]);
+          children: [ListView(), Center(child: Text("This view is empty"))],
+        );
         break;
       case PageStatus.success:
         showSentryModal(context, VikunjaGlobal.of(context));
@@ -124,51 +123,59 @@ class LandingPageState extends State<LandingPage> {
           scrollDirection: Axis.vertical,
           padding: EdgeInsets.symmetric(vertical: 8.0),
           children:
-              ListTile.divideTiles(context: context, tiles: _listTasks(context))
-                  .toList(),
+              ListTile.divideTiles(
+                context: context,
+                tiles: _listTasks(context),
+              ).toList(),
         );
         break;
     }
     return new Scaffold(
       body: RefreshIndicator(onRefresh: () => _loadList(context), child: body),
       floatingActionButton: Builder(
-          builder: (context) => FloatingActionButton(
-                onPressed: () {
-                  _addItemDialog(context);
-                },
-                child: const Icon(Icons.add),
-              )),
+        builder:
+            (context) => FloatingActionButton(
+              onPressed: () {
+                _addItemDialog(context);
+              },
+              child: const Icon(Icons.add),
+            ),
+      ),
       appBar: AppBar(
         title: Text("Vikunja"),
         actions: [
-          PopupMenuButton(itemBuilder: (BuildContext context) {
-            return [
-              PopupMenuItem(
+          PopupMenuButton(
+            itemBuilder: (BuildContext context) {
+              return [
+                PopupMenuItem(
                   child: InkWell(
-                      onTap: () {
-                        Navigator.pop(context);
-                        bool newval = !onlyDueDate;
-                        VikunjaGlobal.of(context)
-                            .settingsManager
-                            .setLandingPageOnlyDueDateTasks(newval)
-                            .then((value) {
-                          setState(() {
-                            onlyDueDate = newval;
-                            _loadList(context);
+                    onTap: () {
+                      Navigator.pop(context);
+                      bool newval = !onlyDueDate;
+                      VikunjaGlobal.of(context).settingsManager
+                          .setLandingPageOnlyDueDateTasks(newval)
+                          .then((value) {
+                            setState(() {
+                              onlyDueDate = newval;
+                              _loadList(context);
+                            });
                           });
-                        });
-                      },
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Text("Only show tasks with due date"),
-                            Checkbox(
-                              value: onlyDueDate,
-                              onChanged: (bool? value) {},
-                            )
-                          ])))
-            ];
-          }),
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text("Only show tasks with due date"),
+                        Checkbox(
+                          value: onlyDueDate,
+                          onChanged: (bool? value) {},
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ];
+            },
+          ),
         ],
       ),
     );
@@ -176,22 +183,30 @@ class LandingPageState extends State<LandingPage> {
 
   _addItemDialog(BuildContext context, {String? prefilledTitle}) {
     if (defaultList == null) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Please select a default list in the settings'),
-      ));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please select a default list in the settings')),
+      );
     } else {
       showDialog(
-          context: context,
-          builder: (_) => AddDialog(
+        context: context,
+        builder:
+            (_) => AddDialog(
               prefilledTitle: prefilledTitle,
               onAddTask: (title, dueDate) => _addTask(title, dueDate, context),
               decoration: new InputDecoration(
-                  labelText: 'Task Name', hintText: 'eg. Milk')));
+                labelText: 'Task Name',
+                hintText: 'eg. Milk',
+              ),
+            ),
+      );
     }
   }
 
   Future<void> _addTask(
-      String title, DateTime? dueDate, BuildContext context) async {
+    String title,
+    DateTime? dueDate,
+    BuildContext context,
+  ) async {
     final globalState = VikunjaGlobal.of(context);
     if (globalState.currentUser == null) {
       return;
@@ -207,9 +222,9 @@ class LandingPageState extends State<LandingPage> {
       ),
     );
 
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text('The task was added successfully!'),
-    ));
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text('The task was added successfully!')));
     _loadList(context).then((value) => setState(() {}));
   }
 
@@ -234,13 +249,14 @@ class LandingPageState extends State<LandingPage> {
     _tasks = [];
     landingPageStatus = PageStatus.loading;
     // FIXME: loads and reschedules tasks each time list is updated
-    VikunjaGlobal.of(context)
-        .notifications
-        .scheduleDueNotifications(VikunjaGlobal.of(context).taskService);
-    return VikunjaGlobal.of(context)
-        .settingsManager
-        .getLandingPageOnlyDueDateTasks()
-        .then((showOnlyDueDateTasks) {
+    VikunjaGlobal.of(context).notifications.scheduleDueNotifications(
+      VikunjaGlobal.of(context).taskService,
+    );
+    return VikunjaGlobal.of(
+      context,
+    ).settingsManager.getLandingPageOnlyDueDateTasks().then((
+      showOnlyDueDateTasks,
+    ) {
       VikunjaGlobalState global = VikunjaGlobal.of(context);
       Map<String, dynamic>? frontend_settings =
           global.currentUser?.settings?.frontend_settings;
@@ -251,21 +267,25 @@ class LandingPageState extends State<LandingPage> {
       }
       // in case user set a filter id for the landing page in the settings
       if (filterId != null && filterId != 0) {
-        return global.taskService.getAllByProject(filterId, {
-          "sort_by": ["due_date", "id"],
-          "order_by": ["asc", "desc"],
-        }).then<Future<void>?>((response) => _handleTaskList(response?.body));
+        return global.taskService
+            .getAllByProject(filterId, {
+              "sort_by": ["due_date", "id"],
+              "order_by": ["asc", "desc"],
+            })
+            .then<Future<void>?>((response) => _handleTaskList(response?.body));
         ;
       }
       List<String> filterStrings = ["done = false"];
       if (showOnlyDueDateTasks) {
         filterStrings.add("due_date > 0001-01-01 00:00");
       }
-      return global.taskService.getByFilterString(filterStrings.join(" && "), {
-        "sort_by": ["due_date", "id"],
-        "order_by": ["asc", "desc"],
-        "filter_include_nulls": ["false"],
-      }).then<Future<void>?>((taskList) => _handleTaskList(taskList));
+      return global.taskService
+          .getByFilterString(filterStrings.join(" && "), {
+            "sort_by": ["due_date", "id"],
+            "order_by": ["asc", "desc"],
+            "filter_include_nulls": ["false"],
+          })
+          .then<Future<void>?>((taskList) => _handleTaskList(taskList));
     }); //.onError((error, stackTrace) {print("error");});
   }
 

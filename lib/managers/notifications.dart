@@ -24,15 +24,19 @@ class NotificationClass {
       new notifs.FlutterLocalNotificationsPlugin();
 
   var androidSpecificsDueDate = notifs.AndroidNotificationDetails(
-      "Vikunja1", "Due Date Notifications",
-      channelDescription: "description",
-      icon: 'vikunja_notification_logo',
-      importance: notifs.Importance.high);
+    "Vikunja1",
+    "Due Date Notifications",
+    channelDescription: "description",
+    icon: 'vikunja_notification_logo',
+    importance: notifs.Importance.high,
+  );
   var androidSpecificsReminders = notifs.AndroidNotificationDetails(
-      "Vikunja2", "Reminder Notifications",
-      channelDescription: "description",
-      icon: 'vikunja_notification_logo',
-      importance: notifs.Importance.high);
+    "Vikunja2",
+    "Reminder Notifications",
+    channelDescription: "description",
+    icon: 'vikunja_notification_logo',
+    importance: notifs.Importance.high,
+  );
   late notifs.DarwinNotificationDetails iOSSpecifics;
   late notifs.NotificationDetails platformChannelSpecificsDueDate;
   late notifs.NotificationDetails platformChannelSpecificsReminders;
@@ -40,38 +44,48 @@ class NotificationClass {
   NotificationClass({this.id, this.body, this.payload, this.title});
 
   final rxSub.BehaviorSubject<NotificationClass>
-      didReceiveLocalNotificationSubject =
+  didReceiveLocalNotificationSubject =
       rxSub.BehaviorSubject<NotificationClass>();
   final rxSub.BehaviorSubject<String> selectNotificationSubject =
       rxSub.BehaviorSubject<String>();
 
   Future<void> _initNotifications() async {
-    var initializationSettingsAndroid =
-        notifs.AndroidInitializationSettings('vikunja_logo');
+    var initializationSettingsAndroid = notifs.AndroidInitializationSettings(
+      'vikunja_logo',
+    );
     var initializationSettingsIOS = notifs.DarwinInitializationSettings(
-        requestAlertPermission: false,
-        requestBadgePermission: false,
-        requestSoundPermission: false,
-        );
+      requestAlertPermission: false,
+      requestBadgePermission: false,
+      requestSoundPermission: false,
+    );
     var initializationSettings = notifs.InitializationSettings(
-        android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
-    await notificationsPlugin.initialize(initializationSettings,
-        onDidReceiveNotificationResponse:
-            (notifs.NotificationResponse resp) async {
-      if (payload != null) {
-        print('notification payload: ' + resp.payload!);
-        selectNotificationSubject.add(resp.payload!);
-      }
-    });
+      android: initializationSettingsAndroid,
+      iOS: initializationSettingsIOS,
+    );
+    await notificationsPlugin.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse: (
+        notifs.NotificationResponse resp,
+      ) async {
+        if (payload != null) {
+          print('notification payload: ' + resp.payload!);
+          selectNotificationSubject.add(resp.payload!);
+        }
+      },
+    );
     print("Notifications initialised successfully");
   }
 
   Future<void> notificationInitializer() async {
     iOSSpecifics = notifs.DarwinNotificationDetails();
     platformChannelSpecificsDueDate = notifs.NotificationDetails(
-        android: androidSpecificsDueDate, iOS: iOSSpecifics);
+      android: androidSpecificsDueDate,
+      iOS: iOSSpecifics,
+    );
     platformChannelSpecificsReminders = notifs.NotificationDetails(
-        android: androidSpecificsReminders, iOS: iOSSpecifics);
+      android: androidSpecificsReminders,
+      iOS: iOSSpecifics,
+    );
     currentTimeZone = await FlutterTimezone.getLocalTimezone();
     notifLaunch = await notificationsPlugin.getNotificationAppLaunchDetails();
     await _initNotifications();
@@ -80,51 +94,64 @@ class NotificationClass {
   }
 
   Future<void> scheduleNotification(
-      String title,
-      String description,
-      notifs.FlutterLocalNotificationsPlugin notifsPlugin,
-      DateTime scheduledTime,
-      String currentTimeZone,
-      notifs.NotificationDetails platformChannelSpecifics,
-      {int? id}) async {
+    String title,
+    String description,
+    notifs.FlutterLocalNotificationsPlugin notifsPlugin,
+    DateTime scheduledTime,
+    String currentTimeZone,
+    notifs.NotificationDetails platformChannelSpecifics, {
+    int? id,
+  }) async {
     if (id == null) id = Random().nextInt(1000000);
     // TODO: move to setup
-    tz.TZDateTime time =
-        tz.TZDateTime.from(scheduledTime, tz.getLocation(currentTimeZone));
+    tz.TZDateTime time = tz.TZDateTime.from(
+      scheduledTime,
+      tz.getLocation(currentTimeZone),
+    );
     if (time.difference(tz.TZDateTime.now(tz.getLocation(currentTimeZone))) <
-        Duration.zero) return;
+        Duration.zero)
+      return;
     print("scheduled notification for time " + time.toString());
     await notifsPlugin.zonedSchedule(
-        id, title, description, time, platformChannelSpecifics,
-        androidScheduleMode: notifs.AndroidScheduleMode.exactAllowWhileIdle,
-        uiLocalNotificationDateInterpretation: notifs
-            .UILocalNotificationDateInterpretation
-            .wallClockTime); // This literally schedules the notification
+      id,
+      title,
+      description,
+      time,
+      platformChannelSpecifics,
+      androidScheduleMode: notifs.AndroidScheduleMode.exactAllowWhileIdle,
+      uiLocalNotificationDateInterpretation:
+          notifs.UILocalNotificationDateInterpretation.wallClockTime,
+    ); // This literally schedules the notification
   }
 
   void sendTestNotification() {
-    notificationsPlugin.show(Random().nextInt(10000000), "Test Notification",
-        "This is a test notification", platformChannelSpecificsReminders);
+    notificationsPlugin.show(
+      Random().nextInt(10000000),
+      "Test Notification",
+      "This is a test notification",
+      platformChannelSpecificsReminders,
+    );
   }
 
   void requestIOSPermissions() {
     notificationsPlugin
         .resolvePlatformSpecificImplementation<
-            notifs.IOSFlutterLocalNotificationsPlugin>()
-        ?.requestPermissions(
-          alert: true,
-          badge: true,
-          sound: true,
-        );
+          notifs.IOSFlutterLocalNotificationsPlugin
+        >()
+        ?.requestPermissions(alert: true, badge: true, sound: true);
   }
 
-  Future<void> scheduleDueNotifications(TaskService taskService,
-      {List<Task>? tasks}) async {
+  Future<void> scheduleDueNotifications(
+    TaskService taskService, {
+    List<Task>? tasks,
+  }) async {
     if (tasks == null)
       tasks = await taskService.getByFilterString(
-          "done=false && (due_date > now || reminders > now)", {
-        "filter_include_nulls": ["false"]
-      });
+        "done=false && (due_date > now || reminders > now)",
+        {
+          "filter_include_nulls": ["false"],
+        },
+      );
     if (tasks == null) {
       print("did not receive tasks on notification update");
       return;

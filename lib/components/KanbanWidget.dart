@@ -35,8 +35,14 @@ class KanbanClass {
 
   Map<int, BucketProps> _bucketProps = {};
 
-  KanbanClass(this.context, this.notify, this._onViewTapped,
-      this._addItemDialog, this._project, this._view) {
+  KanbanClass(
+    this.context,
+    this.notify,
+    this._onViewTapped,
+    this._addItemDialog,
+    this._project,
+    this._view,
+  ) {
     taskState = Provider.of<ProjectProvider>(context);
   }
 
@@ -77,35 +83,38 @@ class KanbanClass {
           builder: (context, child) {
             return Transform.scale(
               scale: lerpDouble(
-                  1.0, 0.75, Curves.easeInOut.transform(animation.value)),
+                1.0,
+                0.75,
+                Curves.easeInOut.transform(animation.value),
+              ),
               child: child,
             );
           },
         );
       },
-      footer: _draggedBucketIndex != null
-          ? null
-          : SizedBox(
-              width: deviceData.size.width *
-                  (1 - bucketFraction) *
-                  (portrait ? 1 : 2),
-              child: Align(
-                alignment: Alignment.topLeft,
-                child: Padding(
-                  padding: EdgeInsets.only(
-                    top: portrait ? 14 : 5,
-                  ),
-                  child: RotatedBox(
-                    quarterTurns: portrait ? 1 : 0,
-                    child: ElevatedButton.icon(
-                      onPressed: () => _addBucketDialog(context),
-                      label: Text('Create Bucket'),
-                      icon: Icon(Icons.add),
+      footer:
+          _draggedBucketIndex != null
+              ? null
+              : SizedBox(
+                width:
+                    deviceData.size.width *
+                    (1 - bucketFraction) *
+                    (portrait ? 1 : 2),
+                child: Align(
+                  alignment: Alignment.topLeft,
+                  child: Padding(
+                    padding: EdgeInsets.only(top: portrait ? 14 : 5),
+                    child: RotatedBox(
+                      quarterTurns: portrait ? 1 : 0,
+                      child: ElevatedButton.icon(
+                        onPressed: () => _addBucketDialog(context),
+                        label: Text('Create Bucket'),
+                        icon: Icon(Icons.add),
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
       onReorderStart: (oldIndex) {
         FocusScope.of(context).unfocus();
         _draggedBucketIndex = oldIndex;
@@ -130,9 +139,10 @@ class KanbanClass {
         taskState!.buckets[newIndex].position = calculateItemPosition(
           positionBefore:
               newIndex != 0 ? taskState!.buckets[newIndex - 1].position : null,
-          positionAfter: newIndex < taskState!.buckets.length - 1
-              ? taskState!.buckets[newIndex + 1].position
-              : null,
+          positionAfter:
+              newIndex < taskState!.buckets.length - 1
+                  ? taskState!.buckets[newIndex + 1].position
+                  : null,
         );
         await _updateBucket(context, taskState!.buckets[newIndex]);
 
@@ -142,9 +152,10 @@ class KanbanClass {
             taskState!.buckets[1].position == 0) {
           taskState!.buckets[1].position = calculateItemPosition(
             positionBefore: taskState!.buckets[0].position,
-            positionAfter: 1 < taskState!.buckets.length - 1
-                ? taskState!.buckets[2].position
-                : null,
+            positionAfter:
+                1 < taskState!.buckets.length - 1
+                    ? taskState!.buckets[2].position
+                    : null,
           );
           _updateBucket(context, taskState!.buckets[1]);
         }
@@ -165,21 +176,24 @@ class KanbanClass {
   Future<void> _addBucketDialog(BuildContext context) {
     FocusScope.of(context).unfocus();
     return showDialog(
-        context: context,
-        builder: (_) => AddDialog(
-              onAdd: (title) => _addBucket(title, context),
-              decoration: InputDecoration(
-                labelText: 'New Bucket Name',
-                hintText: 'eg. To Do',
-              ),
-            ));
+      context: context,
+      builder:
+          (_) => AddDialog(
+            onAdd: (title) => _addBucket(title, context),
+            decoration: InputDecoration(
+              labelText: 'New Bucket Name',
+              hintText: 'eg. To Do',
+            ),
+          ),
+    );
   }
 
   Future<void> _setDoneBucket(BuildContext context, int bucketId) async {
     //setState(() {});
-    _view = (await VikunjaGlobal.of(context)
-        .projectViewService
-        .update(_view.copyWith(doneBucketId: bucketId)))!;
+    _view =
+        (await VikunjaGlobal.of(
+          context,
+        ).projectViewService.update(_view.copyWith(doneBucketId: bucketId)))!;
     notify();
   }
 
@@ -201,9 +215,9 @@ class KanbanClass {
       viewId: _view.id,
     );
 
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text('The bucket was added successfully!'),
-    ));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('The bucket was added successfully!')),
+    );
     notify();
     //setState(() {});
   }
@@ -211,17 +225,20 @@ class KanbanClass {
   Future<void> _updateBucket(BuildContext context, Bucket bucket) {
     return Provider.of<ProjectProvider>(context, listen: false)
         .updateBucket(
-            context: context,
-            bucket: bucket,
-            listId: _project.id,
-            viewId: _view.id)
+          context: context,
+          bucket: bucket,
+          listId: _project.id,
+          viewId: _view.id,
+        )
         .then((_) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('\'${bucket.title}\' bucket updated successfully!'),
-      ));
-      notify();
-      //setState(() {});
-    });
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('\'${bucket.title}\' bucket updated successfully!'),
+            ),
+          );
+          notify();
+          //setState(() {});
+        });
   }
 
   Future<void> _deleteBucket(BuildContext context, Bucket bucket) async {
@@ -232,14 +249,16 @@ class KanbanClass {
       bucketId: bucket.id,
     );
 
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Row(
-        children: <Widget>[
-          Text('\'${bucket.title}\' was deleted.'),
-          Icon(Icons.delete),
-        ],
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: <Widget>[
+            Text('\'${bucket.title}\' was deleted.'),
+            Icon(Icons.delete),
+          ],
+        ),
       ),
-    ));
+    );
 
     _onViewTapped(1);
   }
@@ -250,12 +269,13 @@ class KanbanClass {
     final addTaskButton = ElevatedButton.icon(
       icon: Icon(Icons.add),
       label: Text('Add Task'),
-      onPressed: bucket.limit == 0 || bucket.tasks.length < bucket.limit
-          ? () {
-              FocusScope.of(context).unfocus();
-              _addItemDialog(context, bucket);
-            }
-          : null,
+      onPressed:
+          bucket.limit == 0 || bucket.tasks.length < bucket.limit
+              ? () {
+                FocusScope.of(context).unfocus();
+                _addItemDialog(context, bucket);
+              }
+              : null,
     );
 
     if (_bucketProps[bucket.id] == null)
@@ -289,12 +309,10 @@ class KanbanClass {
                   minLeadingWidth: 15,
                   horizontalTitleGap: 4,
                   contentPadding: const EdgeInsets.only(left: 16, right: 10),
-                  leading: bucket.id == _view.doneBucketId
-                      ? Icon(
-                          Icons.done_all,
-                          color: Colors.green,
-                        )
-                      : null,
+                  leading:
+                      bucket.id == _view.doneBucketId
+                          ? Icon(Icons.done_all, color: Colors.green)
+                          : null,
                   title: Row(
                     children: <Widget>[
                       Expanded(
@@ -306,13 +324,14 @@ class KanbanClass {
                           style: theme.textTheme.titleLarge,
                           onSubmitted: (title) {
                             if (title.isEmpty) {
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(SnackBar(
-                                content: Text(
-                                  'Bucket title cannot be empty!',
-                                  style: TextStyle(color: Colors.red),
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    'Bucket title cannot be empty!',
+                                    style: TextStyle(color: Colors.red),
+                                  ),
                                 ),
-                              ));
+                              );
                               return;
                             }
                             bucket.title = title;
@@ -328,11 +347,13 @@ class KanbanClass {
                             style: (theme.textTheme.titleMedium ??
                                     TextStyle(fontSize: 16))
                                 .copyWith(
-                              color: bucket.limit != 0 &&
-                                      bucket.tasks.length >= bucket.limit
-                                  ? Colors.red
-                                  : null,
-                            ),
+                                  color:
+                                      bucket.limit != 0 &&
+                                              bucket.tasks.length >=
+                                                  bucket.limit
+                                          ? Colors.red
+                                          : null,
+                                ),
                           ),
                         ),
                     ],
@@ -348,9 +369,8 @@ class KanbanClass {
                             case BucketMenu.limit:
                               showDialog<int>(
                                 context: context,
-                                builder: (_) => BucketLimitDialog(
-                                  bucket: bucket,
-                                ),
+                                builder:
+                                    (_) => BucketLimitDialog(bucket: bucket),
                               ).then((limit) {
                                 if (limit != null) {
                                   bucket.limit = limit;
@@ -359,8 +379,9 @@ class KanbanClass {
                               });
                               break;
                             case BucketMenu.done:
-                              _project =
-                                  _project.copyWith(doneBucketId: bucket.id);
+                              _project = _project.copyWith(
+                                doneBucketId: bucket.id,
+                              );
                               _setDoneBucket(context, bucket.id);
                               notify();
                               //_updateBucket(context, bucket);
@@ -385,9 +406,10 @@ class KanbanClass {
                                     padding: const EdgeInsets.only(right: 4),
                                     child: Icon(
                                       Icons.done_all,
-                                      color: bucket.id == _view.doneBucketId
-                                          ? Colors.green
-                                          : null,
+                                      color:
+                                          bucket.id == _view.doneBucketId
+                                              ? Colors.green
+                                              : null,
                                     ),
                                   ),
                                   Text('Done Bucket'),
@@ -406,9 +428,10 @@ class KanbanClass {
                                   ),
                                   Text(
                                     'Delete',
-                                    style: enableDelete
-                                        ? TextStyle(color: Colors.red)
-                                        : null,
+                                    style:
+                                        enableDelete
+                                            ? TextStyle(color: Colors.red)
+                                            : null,
                                   ),
                                 ],
                               ),
@@ -444,14 +467,18 @@ class KanbanClass {
                         // scroll left
                         if (_pageController!.position.extentBefore != 0)
                           _pageController!.previousPage(
-                              duration: scrollDuration, curve: scrollCurve);
+                            duration: scrollDuration,
+                            curve: scrollCurve,
+                          );
                         updateAction();
                       } else if (details.globalPosition.dx >
                           screenSize.width * 0.9) {
                         // scroll right
                         if (_pageController!.position.extentAfter != 0)
                           _pageController!.nextPage(
-                              duration: scrollDuration, curve: scrollCurve);
+                            duration: scrollDuration,
+                            curve: scrollCurve,
+                          );
                         updateAction();
                       } else {
                         final viewingBucket =
@@ -463,18 +490,20 @@ class KanbanClass {
                           // scroll up
                           if (bucketController.position.extentBefore != 0)
                             bucketController.animateTo(
-                                bucketController.offset - 80,
-                                duration: scrollDuration,
-                                curve: scrollCurve);
+                              bucketController.offset - 80,
+                              duration: scrollDuration,
+                              curve: scrollCurve,
+                            );
                           updateAction();
                         } else if (details.globalPosition.dy >
                             screenSize.height * 0.8) {
                           // scroll down
                           if (bucketController.position.extentAfter != 0)
                             bucketController.animateTo(
-                                bucketController.offset + 80,
-                                duration: scrollDuration,
-                                curve: scrollCurve);
+                              bucketController.offset + 80,
+                              duration: scrollDuration,
+                              curve: scrollCurve,
+                            );
                           updateAction();
                         }
                       }
@@ -498,7 +527,8 @@ class KanbanClass {
                           DottedBorder(
                             color: Colors.grey,
                             child: SizedBox.fromSize(
-                                size: _bucketProps[bucket.id]!.taskDropSize),
+                              size: _bucketProps[bucket.id]!.taskDropSize,
+                            ),
                           ),
                         Align(
                           alignment: Alignment.topCenter,
@@ -510,8 +540,9 @@ class KanbanClass {
                     if (bucket.tasks.length == 0)
                       DragTarget<TaskData>(
                         onWillAcceptWithDetails: (data) {
-                          /*setState(() =>*/ _bucketProps[bucket.id]!
-                              .taskDropSize = data.data.size; //);
+                          /*setState(() =>*/
+                          _bucketProps[bucket.id]!.taskDropSize =
+                              data.data.size; //);
                           notify();
                           return true;
                         },
@@ -523,11 +554,17 @@ class KanbanClass {
                                 newBucketId: bucket.id,
                                 index: 0,
                               )
-                              .then((_) => ScaffoldMessenger.of(context)
-                                      .showSnackBar(SnackBar(
+                              .then(
+                                (_) => ScaffoldMessenger.of(
+                                  context,
+                                ).showSnackBar(
+                                  SnackBar(
                                     content: Text(
-                                        '\'${data.data.task.title}\' was moved to \'${bucket.title}\' successfully!'),
-                                  )));
+                                      '\'${data.data.task.title}\' was moved to \'${bucket.title}\' successfully!',
+                                    ),
+                                  ),
+                                ),
+                              );
 
                           //setState(() =>
                           _bucketProps[bucket.id]!.taskDropSize = null; //);
@@ -547,10 +584,7 @@ class KanbanClass {
           ],
         ),
         if (_bucketProps[bucket.id]!.scrollable)
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: addTaskButton,
-          ),
+          Align(alignment: Alignment.bottomCenter, child: addTaskButton),
       ],
     );
   }
@@ -558,6 +592,10 @@ class KanbanClass {
   Future<void> loadBucketsForPage(int page) {
     print(_view.id);
     return Provider.of<ProjectProvider>(context, listen: false).loadBuckets(
-        context: context, listId: _project.id, viewId: _view.id, page: page);
+      context: context,
+      listId: _project.id,
+      viewId: _view.id,
+      page: page,
+    );
   }
 }

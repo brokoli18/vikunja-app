@@ -43,17 +43,20 @@ void callbackDispatcher() {
   }
   Workmanager().executeTask((task, inputData) async {
     print(
-        "Native called background task: $task"); //simpleTask will be emitted here.
+      "Native called background task: $task",
+    ); //simpleTask will be emitted here.
     if (task == "update-tasks" && inputData != null) {
-      Client client = Client(null,
-          token: inputData["client_token"],
-          base: inputData["client_base"],
-          authenticated: true);
+      Client client = Client(
+        null,
+        token: inputData["client_token"],
+        base: inputData["client_base"],
+        authenticated: true,
+      );
       tz.initializeTimeZones();
 
-      return SettingsManager(new FlutterSecureStorage())
-          .getIgnoreCertificates()
-          .then((value) async {
+      return SettingsManager(
+        new FlutterSecureStorage(),
+      ).getIgnoreCertificates().then((value) async {
         print("ignoring: $value");
         client.reloadIgnoreCerts(value == "1");
 
@@ -116,7 +119,8 @@ void main() async {
   } catch (e) {
     print("Failed to initialize workmanager: $e");
   }
-  runApp(ChangeNotifierProvider<ProjectProvider>(
+  runApp(
+    ChangeNotifierProvider<ProjectProvider>(
       create: (_) => new ProjectProvider(),
       child: VikunjaGlobal(
         child: new VikunjaApp(
@@ -124,11 +128,10 @@ void main() async {
           key: UniqueKey(),
           navkey: globalNavigatorKey,
         ),
-        login: new VikunjaApp(
-          home: LoginPage(),
-          key: UniqueKey(),
-        ),
-      )));
+        login: new VikunjaApp(home: LoginPage(), key: UniqueKey()),
+      ),
+    ),
+  );
 }
 
 class ThemeModel with ChangeNotifier {
@@ -158,13 +161,16 @@ class ThemeModel with ChangeNotifier {
   }
 
   ThemeData getWithColorScheme(
-      ColorScheme? lightTheme, ColorScheme? darkTheme) {
+    ColorScheme? lightTheme,
+    ColorScheme? darkTheme,
+  ) {
     switch (_themeMode) {
       case FlutterThemeMode.dark:
         return buildVikunjaDarkTheme().copyWith(colorScheme: darkTheme);
       case FlutterThemeMode.materialYouLight:
-        return buildVikunjaMaterialLightTheme()
-            .copyWith(colorScheme: lightTheme);
+        return buildVikunjaMaterialLightTheme().copyWith(
+          colorScheme: lightTheme,
+        );
       case FlutterThemeMode.materialYouDark:
         return buildVikunjaMaterialDarkTheme().copyWith(colorScheme: darkTheme);
       default:
@@ -200,57 +206,64 @@ class VikunjaApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new ListenableBuilder(
-        listenable: themeModel,
-        builder: (_, mode) {
-          return FutureBuilder<void>(
-              future: getLaunchData(),
-              builder: (BuildContext context, data) {
-                if (data.hasData) {
-                  return new DynamicColorBuilder(
-                      builder: (lightTheme, darkTheme) {
-                    if (sentryEnabled) {
-                      if (!sentyInitialized) {
-                        sentyInitialized = true;
-                        print("sentry enabled");
-                        SentryFlutter.init((options) {
-                          options.dsn =
-                              'https://a09618e3bb30e03b93233c21973df869@o1047380.ingest.us.sentry.io/4507995557134336';
-                          options.tracesSampleRate = 1.0;
-                          options.profilesSampleRate = 1.0;
-                        }).then((_) {
-                          FlutterError.onError = (details) async {
-                            print("sending to sentry");
-                            await Sentry.captureException(
-                              details.exception,
-                              stackTrace: details.stack,
-                            );
-                            FlutterError.presentError(details);
-                          };
-                          PlatformDispatcher.instance.onError = (error, stack) {
-                            print("sending to sentry (platform)");
-                            Sentry.captureException(error, stackTrace: stack);
-                            FlutterError.presentError(FlutterErrorDetails(
-                                exception: error, stack: stack));
-                            return false;
-                          };
-                        });
-                      }
-
-                      return SentryWidget(
-                          child: buildMaterialApp(themeModel.getWithColorScheme(
-                              lightTheme, darkTheme)));
-                    } else {
-                      sentyInitialized = false;
+      listenable: themeModel,
+      builder: (_, mode) {
+        return FutureBuilder<void>(
+          future: getLaunchData(),
+          builder: (BuildContext context, data) {
+            if (data.hasData) {
+              return new DynamicColorBuilder(
+                builder: (lightTheme, darkTheme) {
+                  if (sentryEnabled) {
+                    if (!sentyInitialized) {
+                      sentyInitialized = true;
+                      print("sentry enabled");
+                      SentryFlutter.init((options) {
+                        options.dsn =
+                            'https://a09618e3bb30e03b93233c21973df869@o1047380.ingest.us.sentry.io/4507995557134336';
+                        options.tracesSampleRate = 1.0;
+                        options.profilesSampleRate = 1.0;
+                      }).then((_) {
+                        FlutterError.onError = (details) async {
+                          print("sending to sentry");
+                          await Sentry.captureException(
+                            details.exception,
+                            stackTrace: details.stack,
+                          );
+                          FlutterError.presentError(details);
+                        };
+                        PlatformDispatcher.instance.onError = (error, stack) {
+                          print("sending to sentry (platform)");
+                          Sentry.captureException(error, stackTrace: stack);
+                          FlutterError.presentError(
+                            FlutterErrorDetails(exception: error, stack: stack),
+                          );
+                          return false;
+                        };
+                      });
                     }
 
-                    return buildMaterialApp(
-                        themeModel.getWithColorScheme(lightTheme, darkTheme));
-                  });
-                } else {
-                  return Center(child: CircularProgressIndicator());
-                }
-              });
-        });
+                    return SentryWidget(
+                      child: buildMaterialApp(
+                        themeModel.getWithColorScheme(lightTheme, darkTheme),
+                      ),
+                    );
+                  } else {
+                    sentyInitialized = false;
+                  }
+
+                  return buildMaterialApp(
+                    themeModel.getWithColorScheme(lightTheme, darkTheme),
+                  );
+                },
+              );
+            } else {
+              return Center(child: CircularProgressIndicator());
+            }
+          },
+        );
+      },
+    );
   }
 
   Widget buildMaterialApp(ThemeData? themeData) {

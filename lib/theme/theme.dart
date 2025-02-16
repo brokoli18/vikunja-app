@@ -30,12 +30,12 @@ ThemeData _buildVikunjaTheme(ThemeData base, {bool isDark = false}) {
       foregroundColor: vWhite,
     ),
     textTheme: base.textTheme.copyWith(
-//      headline: base.textTheme.headline.copyWith(
-//        fontFamily: 'Quicksand',
-//      ),
-//      title: base.textTheme.title.copyWith(
-//        fontFamily: 'Quicksand',
-//      ),
+      //      headline: base.textTheme.headline.copyWith(
+      //        fontFamily: 'Quicksand',
+      //      ),
+      //      title: base.textTheme.title.copyWith(
+      //        fontFamily: 'Quicksand',
+      //      ),
       labelLarge: base.textTheme.labelLarge?.copyWith(
         color:
             vWhite, // This does not work, looks like a bug in Flutter: https://github.com/flutter/flutter/issues/19623
@@ -43,7 +43,8 @@ ThemeData _buildVikunjaTheme(ThemeData base, {bool isDark = false}) {
     ),
     inputDecorationTheme: InputDecorationTheme(
       enabledBorder: UnderlineInputBorder(
-          borderSide: const BorderSide(color: Colors.grey, width: 1)),
+        borderSide: const BorderSide(color: Colors.grey, width: 1),
+      ),
     ),
     dividerTheme: DividerThemeData(
       color: () {
@@ -55,8 +56,9 @@ ThemeData _buildVikunjaTheme(ThemeData base, {bool isDark = false}) {
       // Make bottomNavigationBar backgroundColor darker to provide more separation
       backgroundColor: () {
         final _hslColor = HSLColor.fromColor(
-            base.bottomNavigationBarTheme.backgroundColor ??
-                base.scaffoldBackgroundColor);
+          base.bottomNavigationBarTheme.backgroundColor ??
+              base.scaffoldBackgroundColor,
+        );
         return _hslColor
             .withLightness(max(_hslColor.lightness - 0.03, 0))
             .toColor();

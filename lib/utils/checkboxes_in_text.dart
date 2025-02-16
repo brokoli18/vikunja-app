@@ -2,20 +2,14 @@ class CheckboxStatistics {
   final int total;
   final int checked;
 
-  const CheckboxStatistics({
-    required this.total,
-    required this.checked,
-  });
+  const CheckboxStatistics({required this.total, required this.checked});
 }
 
 class MatchedCheckboxes {
   final Iterable<Match> checked;
   final Iterable<Match> unchecked;
 
-  const MatchedCheckboxes({
-    required this.checked,
-    required this.unchecked,
-  });
+  const MatchedCheckboxes({required this.checked, required this.unchecked});
 }
 
 MatchedCheckboxes getCheckboxesInText(String text) {
@@ -32,10 +26,7 @@ MatchedCheckboxes getCheckboxesInText(String text) {
       unchecked.add(match);
   }
 
-  return MatchedCheckboxes(
-    checked: checked,
-    unchecked: unchecked,
-  );
+  return MatchedCheckboxes(checked: checked, unchecked: unchecked);
 }
 
 CheckboxStatistics getCheckboxStatistics(String text) {

@@ -18,19 +18,19 @@ class TaskAttachmentFile {
   });
 
   TaskAttachmentFile.fromJSON(Map<String, dynamic> json)
-      : id = json['id'],
-        created = DateTime.parse(json['created']),
-        mime = json['mime'],
-        name = json['name'],
-        size = json['size'];
+    : id = json['id'],
+      created = DateTime.parse(json['created']),
+      mime = json['mime'],
+      name = json['name'],
+      size = json['size'];
 
   toJSON() => {
-        'id': id,
-        'created': created.toUtc().toIso8601String(),
-        'mime': mime,
-        'name': name,
-        'size': size,
-      };
+    'id': id,
+    'created': created.toUtc().toIso8601String(),
+    'mime': mime,
+    'name': name,
+    'size': size,
+  };
 }
 
 @JsonSerializable()
@@ -50,17 +50,17 @@ class TaskAttachment {
   }) : this.created = created ?? DateTime.now();
 
   TaskAttachment.fromJSON(Map<String, dynamic> json)
-      : id = json['id'],
-        taskId = json['task_id'],
-        created = DateTime.parse(json['created']),
-        file = TaskAttachmentFile.fromJSON(json['file']),
-        createdBy = User.fromJson(json['created_by']);
+    : id = json['id'],
+      taskId = json['task_id'],
+      created = DateTime.parse(json['created']),
+      file = TaskAttachmentFile.fromJSON(json['file']),
+      createdBy = User.fromJson(json['created_by']);
 
   toJSON() => {
-        'id': id,
-        'task_id': taskId,
-        'created': created.toUtc().toIso8601String(),
-        'created_by': createdBy.toJSON(),
-        'file': file.toJSON(),
-      };
+    'id': id,
+    'task_id': taskId,
+    'created': created.toUtc().toIso8601String(),
+    'created_by': createdBy.toJSON(),
+    'file': file.toJSON(),
+  };
 }

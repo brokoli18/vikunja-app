@@ -23,7 +23,7 @@ class HomePageState extends State<HomePage> {
       child: LandingPage(),
     ),
     ProjectOverviewPage(),
-    SettingsPage()
+    SettingsPage(),
   ];
 
   List<NavigationDestination> navbarItems = [

@@ -14,12 +14,15 @@ class FancyAppBar extends StatelessWidget {
       decoration: new BoxDecoration(color: Colors.blue),
       child: new Padding(
         padding: EdgeInsets.symmetric(vertical: 38, horizontal: 10),
-        child: new Text(title,
-            style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-                fontFamily: 'Quicksand',
-                fontSize: 21)),
+        child: new Text(
+          title,
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
+            fontFamily: 'Quicksand',
+            fontSize: 21,
+          ),
+        ),
       ),
     );
   }

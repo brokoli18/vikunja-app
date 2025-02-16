@@ -13,12 +13,16 @@ class LabelTaskBulkAPIService extends APIService
   Future<List<Label>?> update(Task task, List<Label>? labels) {
     if (labels == null) labels = [];
     return client
-        .post('/tasks/${task.id}/labels/bulk',
-            body: LabelTaskBulk(labels: labels).toJSON())
+        .post(
+          '/tasks/${task.id}/labels/bulk',
+          body: LabelTaskBulk(labels: labels).toJSON(),
+        )
         .then((response) {
-      if (response == null) return null;
-      return convertList(
-          response.body['labels'], (result) => Label.fromJson(result));
-    });
+          if (response == null) return null;
+          return convertList(
+            response.body['labels'],
+            (result) => Label.fromJson(result),
+          );
+        });
   }
 }

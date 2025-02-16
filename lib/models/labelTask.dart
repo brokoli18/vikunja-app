@@ -9,11 +9,8 @@ class LabelTask {
   LabelTask({required this.label, required this.task});
 
   LabelTask.fromJson(Map<String, dynamic> json, User createdBy)
-      : label =
-            new Label(id: json['label_id'], title: '', createdBy: createdBy),
-        task = null;
+    : label = new Label(id: json['label_id'], title: '', createdBy: createdBy),
+      task = null;
 
-  toJSON() => {
-        'label_id': label.id,
-      };
+  toJSON() => {'label_id': label.id};
 }

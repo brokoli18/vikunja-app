@@ -13,7 +13,7 @@ class ErrorDialog extends StatelessWidget {
         TextButton(
           child: Text('Close'),
           onPressed: () => Navigator.of(context).maybePop(),
-        )
+        ),
       ],
     );
   }

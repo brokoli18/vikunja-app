@@ -11,20 +11,18 @@ class TaskReminder {
   final String relative_to;
   DateTime reminder;
 
-  TaskReminder(this.reminder)
-      : relative_period = 0,
-        relative_to = "";
+  TaskReminder(this.reminder) : relative_period = 0, relative_to = "";
 
   TaskReminder.fromJson(Map<String, dynamic> json)
-      : reminder = DateTime.parse(json['reminder']),
-        relative_period = json['relative_period'],
-        relative_to = json['relative_to'];
+    : reminder = DateTime.parse(json['reminder']),
+      relative_period = json['relative_period'],
+      relative_to = json['relative_to'];
 
   toJSON() => {
-        'relative_period': relative_period,
-        'relative_to': relative_to,
-        'reminder': reminder.toUtc().toIso8601String(),
-      };
+    'relative_period': relative_period,
+    'relative_to': relative_to,
+    'reminder': reminder.toUtc().toIso8601String(),
+  };
 }
 
 @JsonSerializable()
@@ -77,8 +75,8 @@ class Task {
     //required this.listId,
     required this.projectId,
     this.bucketId,
-  })  : this.created = created ?? DateTime.now(),
-        this.updated = updated ?? DateTime.now();
+  }) : this.created = created ?? DateTime.now(),
+       this.updated = updated ?? DateTime.now();
 
   bool loading = false;
 
@@ -94,79 +92,85 @@ class Task {
   bool get hasEndDate => endDate?.year != 1;
 
   Task.fromJson(Map<String, dynamic> json)
-      : id = json['id'],
-        title = json['title'],
-        description = json['description'],
-        identifier = json['identifier'],
-        done = json['done'],
-        reminderDates = json['reminders'] != null
-            ? (json['reminders'] as List<dynamic>)
-                .map((ts) => TaskReminder.fromJson(ts))
-                .toList()
-            : [],
-        dueDate = DateTime.parse(json['due_date']),
-        startDate = DateTime.parse(json['start_date']),
-        endDate = DateTime.parse(json['end_date']),
-        parentTaskId = json['parent_task_id'],
-        priority = json['priority'],
-        repeatAfter = Duration(seconds: json['repeat_after']),
-        color = json['hex_color'] != ''
-            ? Color(int.parse(json['hex_color'], radix: 16) + 0xFF000000)
-            : null,
-        position = json['position'] is int
-            ? json['position'].toDouble()
-            : json['position'],
-        percent_done = json['percent_done'] is int
-            ? json['percent_done'].toDouble()
-            : json['percent_done'],
-        labels = json['labels'] != null
-            ? (json['labels'] as List<dynamic>)
-                .map((label) => Label.fromJson(label))
-                .toList()
-            : [],
-        subtasks = json['subtasks'] != null
-            ? (json['subtasks'] as List<dynamic>)
-                .map((subtask) => Task.fromJson(subtask))
-                .toList()
-            : [],
-        attachments = json['attachments'] != null
-            ? (json['attachments'] as List<dynamic>)
-                .map((attachment) => TaskAttachment.fromJSON(attachment))
-                .toList()
-            : [],
-        updated = DateTime.parse(json['updated']),
-        created = DateTime.parse(json['created']),
-        //listId = json['list_id'],
-        projectId = json['project_id'],
-        bucketId = json['bucket_id'],
-        createdBy = User.fromJson(json['created_by']);
+    : id = json['id'],
+      title = json['title'],
+      description = json['description'],
+      identifier = json['identifier'],
+      done = json['done'],
+      reminderDates =
+          json['reminders'] != null
+              ? (json['reminders'] as List<dynamic>)
+                  .map((ts) => TaskReminder.fromJson(ts))
+                  .toList()
+              : [],
+      dueDate = DateTime.parse(json['due_date']),
+      startDate = DateTime.parse(json['start_date']),
+      endDate = DateTime.parse(json['end_date']),
+      parentTaskId = json['parent_task_id'],
+      priority = json['priority'],
+      repeatAfter = Duration(seconds: json['repeat_after']),
+      color =
+          json['hex_color'] != ''
+              ? Color(int.parse(json['hex_color'], radix: 16) + 0xFF000000)
+              : null,
+      position =
+          json['position'] is int
+              ? json['position'].toDouble()
+              : json['position'],
+      percent_done =
+          json['percent_done'] is int
+              ? json['percent_done'].toDouble()
+              : json['percent_done'],
+      labels =
+          json['labels'] != null
+              ? (json['labels'] as List<dynamic>)
+                  .map((label) => Label.fromJson(label))
+                  .toList()
+              : [],
+      subtasks =
+          json['subtasks'] != null
+              ? (json['subtasks'] as List<dynamic>)
+                  .map((subtask) => Task.fromJson(subtask))
+                  .toList()
+              : [],
+      attachments =
+          json['attachments'] != null
+              ? (json['attachments'] as List<dynamic>)
+                  .map((attachment) => TaskAttachment.fromJSON(attachment))
+                  .toList()
+              : [],
+      updated = DateTime.parse(json['updated']),
+      created = DateTime.parse(json['created']),
+      //listId = json['list_id'],
+      projectId = json['project_id'],
+      bucketId = json['bucket_id'],
+      createdBy = User.fromJson(json['created_by']);
 
   toJSON() => {
-        'id': id,
-        'title': title,
-        'description': description,
-        'identifier': identifier.isNotEmpty ? identifier : null,
-        'done': done,
-        'reminders': reminderDates.map((date) => date.toJSON()).toList(),
-        'due_date': dueDate?.toUtc().toIso8601String(),
-        'start_date': startDate?.toUtc().toIso8601String(),
-        'end_date': endDate?.toUtc().toIso8601String(),
-        'priority': priority,
-        'repeat_after': repeatAfter?.inSeconds,
-        'hex_color':
-            color?.value.toRadixString(16).padLeft(8, '0').substring(2),
-        'position': position,
-        'percent_done': percent_done,
-        'project_id': projectId,
-        'labels': labels.map((label) => label.toJSON()).toList(),
-        'subtasks': subtasks.map((subtask) => subtask.toJSON()).toList(),
-        'attachments':
-            attachments.map((attachment) => attachment.toJSON()).toList(),
-        'bucket_id': bucketId,
-        'created_by': createdBy.toJSON(),
-        'updated': updated.toUtc().toIso8601String(),
-        'created': created.toUtc().toIso8601String(),
-      };
+    'id': id,
+    'title': title,
+    'description': description,
+    'identifier': identifier.isNotEmpty ? identifier : null,
+    'done': done,
+    'reminders': reminderDates.map((date) => date.toJSON()).toList(),
+    'due_date': dueDate?.toUtc().toIso8601String(),
+    'start_date': startDate?.toUtc().toIso8601String(),
+    'end_date': endDate?.toUtc().toIso8601String(),
+    'priority': priority,
+    'repeat_after': repeatAfter?.inSeconds,
+    'hex_color': color?.value.toRadixString(16).padLeft(8, '0').substring(2),
+    'position': position,
+    'percent_done': percent_done,
+    'project_id': projectId,
+    'labels': labels.map((label) => label.toJSON()).toList(),
+    'subtasks': subtasks.map((subtask) => subtask.toJSON()).toList(),
+    'attachments':
+        attachments.map((attachment) => attachment.toJSON()).toList(),
+    'bucket_id': bucketId,
+    'created_by': createdBy.toJSON(),
+    'updated': updated.toUtc().toIso8601String(),
+    'created': created.toUtc().toIso8601String(),
+  };
 
   Task copyWith({
     int? id,
