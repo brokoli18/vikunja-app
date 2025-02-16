@@ -42,5 +42,7 @@ jobs:
           channel: stable
       - name: Check Dart Format
         run: | 
+          dart version
+          flutter version
           dart format .
           git diff
