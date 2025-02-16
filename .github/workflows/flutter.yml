@@ -44,4 +44,4 @@ jobs:
         run: | 
           /usr/bin/git branch
           dart --version
-          dart format --set-exit-if-changed .
+          dart format -o show --set-exit-if-changed .
