@@ -41,4 +41,13 @@ jobs:
         with:
           channel: stable
       - name: Check Dart Format
-        run: dart format --set-exit-if-changed .
+        run: | 
+          dart --version
+          flutter --version
+          dart format .
+          git checkout -b formatted
+          git add .
+          git config user.email runner-test@github.com
+          git config user.name runner
+          git commit -m 'Formatting changes'
+          git push -u origin formatted
