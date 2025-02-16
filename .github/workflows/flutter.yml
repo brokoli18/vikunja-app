@@ -42,6 +42,5 @@ jobs:
           channel: stable
       - name: Check Dart Format
         run: | 
-          /usr/bin/git branch
-          dart --version
-          dart format -o show --set-exit-if-changed .
+          dart format --set-exit-if-changed .
+          git diff
