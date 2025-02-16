@@ -45,4 +45,5 @@ jobs:
           dart --version
           flutter --version
           dart format .
-          git diff
+          git checkout -b formatted
+          git push -u origin formatted
