@@ -46,4 +46,6 @@ jobs:
           flutter --version
           dart format .
           git checkout -b formatted
+          git add .
+          git commit -m 'Formatting changes'
           git push -u origin formatted
