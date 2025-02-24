@@ -304,9 +304,12 @@ class SettingsManager {
         .read(key: "landing-page-due-date-tasks")
         .then((dueDate) {
           return _storage.read(key: "landing-page-today-tasks").then((today) {
+            print('WHAAAATT');
+            print(dueDate);
+            print(today);
             return {
-              'landing-page-due-date-tasks': dueDate == 1,
-              'landing-page-today-tasks': today == 1,
+              'landing-page-due-date-tasks': dueDate == "1",
+              'landing-page-today-tasks': today == "1",
             };
           });
         });

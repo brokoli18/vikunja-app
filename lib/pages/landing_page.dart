@@ -33,7 +33,7 @@ class LandingPage extends HomeScreenWidget {
 class LandingPageState extends State<LandingPage> {
   int? defaultList;
   bool onlyDueDate = true;
-  bool showToday = false;
+  bool showToday = true;
   List<Task> _tasks = [];
   PageStatus landingPageStatus = PageStatus.built;
   static const platform = const MethodChannel('vikunja');
@@ -283,6 +283,8 @@ class LandingPageState extends State<LandingPage> {
         ;
       }
       List<String> filterStrings = ["done = false"];
+      print('POOOOOO');
+      print(showOnlyDueDateTasks);
       if (showOnlyDueDateTasks['landing-page-due-date-tasks'] == 1 ) {
         filterStrings.add("due_date > 0001-01-01 00:00");
       }
