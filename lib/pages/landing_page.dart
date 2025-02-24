@@ -283,12 +283,10 @@ class LandingPageState extends State<LandingPage> {
         ;
       }
       List<String> filterStrings = ["done = false"];
-      print('POOOOOO');
-      print(showOnlyDueDateTasks);
-      if (showOnlyDueDateTasks['landing-page-due-date-tasks'] == 1 ) {
+      if (showOnlyDueDateTasks['landing-page-due-date-tasks'] == true ) {
         filterStrings.add("due_date > 0001-01-01 00:00");
       }
-      if (showOnlyDueDateTasks['landing-page-today-tasks'] == 1) {
+      if (showOnlyDueDateTasks['landing-page-today-tasks'] == true) {
         filterStrings.add("due_date < now/d+1d");
       }
       return global.taskService.getByFilterString(filterStrings.join(" && "), {
