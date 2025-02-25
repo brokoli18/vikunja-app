@@ -283,7 +283,7 @@ class LandingPageState extends State<LandingPage> {
         ;
       }
       List<String> filterStrings = ["done = false"];
-      if (showOnlyDueDateTasks['landing-page-due-date-tasks'] == true ) {
+      if (showOnlyDueDateTasks['landing-page-due-date-tasks'] == true) {
         filterStrings.add("due_date > 0001-01-01 00:00");
       }
       if (showOnlyDueDateTasks['landing-page-today-tasks'] == true) {

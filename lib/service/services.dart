@@ -300,16 +300,14 @@ class SettingsManager {
     // Map<String, bool> filters = {};
     // await filters['landing-page-due-date-tasks'] = _storage.read(key: "landing-page-due-date-tasks");
     // await filters['landing-page-today-tasks'] = _storage.read(key: "landing-page-today-tasks");
-    return _storage
-        .read(key: "landing-page-due-date-tasks")
-        .then((dueDate) {
-          return _storage.read(key: "landing-page-today-tasks").then((today) {
-            return {
-              'landing-page-due-date-tasks': dueDate == "1",
-              'landing-page-today-tasks': today == "1",
-            };
-          });
-        });
+    return _storage.read(key: "landing-page-due-date-tasks").then((dueDate) {
+      return _storage.read(key: "landing-page-today-tasks").then((today) {
+        return {
+          'landing-page-due-date-tasks': dueDate == "1",
+          'landing-page-today-tasks': today == "1",
+        };
+      });
+    });
   }
 
   Future<void> setLandingPageOnlyDueDateTasks(bool value) {
@@ -321,7 +319,6 @@ class SettingsManager {
     return _storage.write(
         key: "landing-page-today-tasks", value: value ? "1" : "0");
   }
-
 
   Future<String?> getVersionNotifications() {
     return _storage.read(key: "get-version-notifications");
