@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:home_widget/home_widget.dart';
 import 'package:vikunja_app/global.dart';
 import 'package:vikunja_app/service/services.dart';
 
@@ -31,6 +32,13 @@ class LandingPage extends HomeScreenWidget {
 }
 
 class LandingPageState extends State<LandingPage> {
+  // Variables needed for widget
+  int numofTasks = 0;
+  String appGroupId = 'group.vikunja.io';
+  String androidWidgetName = 'VikunjaWidget';
+  String dataKey = 'howManyTasks';
+
+
   int? defaultList;
   bool onlyDueDate = true;
   List<Task> _tasks = [];
@@ -85,6 +93,7 @@ class LandingPageState extends State<LandingPage> {
         scheduleIntent();
       });
     });
+    HomeWidget.setAppGroupId(appGroupId);
   }
 
   @override
@@ -280,6 +289,7 @@ class LandingPageState extends State<LandingPage> {
     setState(() {
       if (taskList != null) {
         _tasks = taskList;
+        _handleWidget(taskList.length, dataKey, androidWidgetName);
         landingPageStatus = PageStatus.success;
       } else {
         landingPageStatus = PageStatus.error;
@@ -288,3 +298,12 @@ class LandingPageState extends State<LandingPage> {
     return Future.value();
   }
 }
+
+  void _handleWidget(int numtasks, String dataKey, String androidWidgetName) async {
+    String data = "There are $numtasks tasks";
+    await HomeWidget.saveWidgetData(dataKey, data);
+    await HomeWidget.updateWidget(
+      androidName: androidWidgetName,
+    );
+
+  } 
