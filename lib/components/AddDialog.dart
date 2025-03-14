@@ -2,11 +2,11 @@ import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:vikunja_app/components/datetimePicker.dart';
 
-enum NewTaskDue { hour, day, week, month, custom }
+enum NewTaskDue { today, day, week, month, custom }
 
 // TODO: add to enum above
 Map<NewTaskDue, Duration> newTaskDueToDuration = {
-  NewTaskDue.hour: Duration(hours: 2),
+  NewTaskDue.today: Duration(hours: 0),
   NewTaskDue.day: Duration(days: 1),
   NewTaskDue.week: Duration(days: 7),
   NewTaskDue.month: Duration(days: 30),
@@ -59,7 +59,7 @@ class AddDialogState extends State<AddDialog> with AfterLayoutMixin<AddDialog> {
           ),
         ]),
         widget.onAddTask != null
-            ? taskDueList("Today", NewTaskDue.hour)
+            ? taskDueList("Today", NewTaskDue.today)
             : new Container(),
         widget.onAddTask != null
             ? taskDueList("1 Day", NewTaskDue.day)
@@ -107,8 +107,16 @@ class AddDialogState extends State<AddDialog> with AfterLayoutMixin<AddDialog> {
         value: newTaskDue == thisNewTaskDue,
         onChanged: (value) {
           newTaskDue = thisNewTaskDue;
-          setState(() => customDueDate =
-              DateTime.now().add(newTaskDueToDuration[thisNewTaskDue]!));
+          setState(() {
+            if (thisNewTaskDue == NewTaskDue.today) {
+              var now = DateTime.now();
+              customDueDate =
+                  DateTime(now.year, now.month, now.day, 23, 59, 59);
+            } else {
+              customDueDate =
+                  DateTime.now().add(newTaskDueToDuration[thisNewTaskDue]!);
+            }
+          });
         },
         shape: CircleBorder(),
       ),
