@@ -289,7 +289,7 @@ class LandingPageState extends State<LandingPage> {
     setState(() {
       if (taskList != null) {
         _tasks = taskList;
-        _handleWidget(taskList.length, dataKey, androidWidgetName);
+        _handleWidget(taskList, dataKey, androidWidgetName);
         landingPageStatus = PageStatus.success;
       } else {
         landingPageStatus = PageStatus.error;
@@ -299,9 +299,8 @@ class LandingPageState extends State<LandingPage> {
   }
 }
 
-  void _handleWidget(int numtasks, String dataKey, String androidWidgetName) async {
-    String data = "There are $numtasks tasks";
-    await HomeWidget.saveWidgetData(dataKey, data);
+  void _handleWidget(List<Task> tasks, String dataKey, String androidWidgetName) async {
+    await HomeWidget.saveWidgetData(dataKey, tasks);
     await HomeWidget.updateWidget(
       androidName: androidWidgetName,
     );
