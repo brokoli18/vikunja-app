@@ -2,10 +2,11 @@ import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:vikunja_app/components/datetimePicker.dart';
 
-enum NewTaskDue { day, week, month, custom }
+enum NewTaskDue { hour, day, week, month, custom }
 
 // TODO: add to enum above
 Map<NewTaskDue, Duration> newTaskDueToDuration = {
+  NewTaskDue.hour: Duration(hours: 2),
   NewTaskDue.day: Duration(days: 1),
   NewTaskDue.week: Duration(days: 7),
   NewTaskDue.month: Duration(days: 30),
@@ -57,6 +58,9 @@ class AddDialogState extends State<AddDialog> with AfterLayoutMixin<AddDialog> {
             ),
           ),
         ]),
+        widget.onAddTask != null
+            ? taskDueList("Today", NewTaskDue.hour)
+            : new Container(),
         widget.onAddTask != null
             ? taskDueList("1 Day", NewTaskDue.day)
             : new Container(),
