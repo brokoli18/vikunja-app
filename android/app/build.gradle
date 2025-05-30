@@ -33,7 +33,7 @@ android {
     namespace 'io.vikunja.flutteringvikunja'
     //compileSdkVersion flutter.compileSdkVersion
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    ndkVersion = "27.0.12077973"
 
     //sourceSets {
     //    main.java.srcDirs += 'src/main/kotlin'
