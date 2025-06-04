@@ -9,10 +9,9 @@
     android:background="@android:color/white">
 
     <ListView
-        android:id="@+id/tasc c_list"
+        android:id="@+id/task_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:divider="#f1f1f1"
         android:dividerHeight="1dp" />
-
 </LinearLayout>
