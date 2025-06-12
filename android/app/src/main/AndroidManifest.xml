@@ -25,7 +25,7 @@
         >
 
         <service
-            android:name=".widget.TaskListService"
+            android:name=".TaskListService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
         <receiver android:name=".TaskWidget" android:exported="false">

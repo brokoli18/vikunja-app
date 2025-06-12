@@ -14,7 +14,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:scaleType="centerCrop"
-        android:contentDescription="@string/time_desc" />
+        android:contentDescription="@string/time_desc"
+        android:layout_marginStart="16dp"
+        android:textColor="#252525"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textFontWeight="600"
+        android:maxLines="3"
+        android:ellipsize="end"/>
 
     <LinearLayout
         android:layout_width="match_parent"
