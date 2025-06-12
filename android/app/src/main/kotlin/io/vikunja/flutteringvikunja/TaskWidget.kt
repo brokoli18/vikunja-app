@@ -1,17 +1,31 @@
 package io.vikunja.flutteringvikunja
 
 import android.appwidget.AppWidgetManager
+import android.appwidget.AppWidgetProvider
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
-import es.antonborri.home_widget.HomeWidgetProvider
+import android.widget.RemoteViews
 
-class TaskListWidget : HomeWidgetProvider() {
+class TaskWidget : AppWidgetProvider() {
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
         appWidgetIds: IntArray,
-        widgetData: SharedPreferences
     ) {
-        TODO("Not yet implemented")
+        appWidgetIds.forEach { id ->
+          // Create intent for ListViewWidgetService
+          val intent = Intent(
+              context,
+              ListViewWidgetService::class.java
+           )
+          // Add App widget id to the intent
+          intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id)
+          // Instantiate a RemoteViews object with the listview xml layout
+          val views = RemoteViews(context.packageName, R.layout.task_list_widget)
+          views.setRemoteAdapter(R.id.task_list, intent)
+          // update the app widget to reflect the data
+          appWidgetManager.updateAppWidget(id, views)
+        }
     }
 }
