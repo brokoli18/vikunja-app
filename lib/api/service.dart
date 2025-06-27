@@ -12,6 +12,11 @@ class APIService {
   @protected
   List<T> convertList<T>(dynamic value, Mapper<T> mapper) {
     if (value == null) return [];
+    if (value.runtimeType != List) return [];
+    // if (value['message'] =='Internal Server Error') return [];
+    // print('TEST');
+    // print(value.runtimeType);
+    // print('TEST');
     return (value as List<dynamic>).map((map) => mapper(map)).toList();
   }
 }

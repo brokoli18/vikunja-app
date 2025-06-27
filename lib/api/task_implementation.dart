@@ -107,9 +107,13 @@ class TaskAPIService extends APIService implements TaskService {
       "filter": [filterString],
       ...?queryParameters
     };
-    print(parameters);
+    // print(parameters);
     return client.get('/tasks/all', parameters).then((response) {
       if (response == null) return null;
+      print('These are the parameters');
+      print(parameters);
+      print('This is the response');
+      print(response.body);
       return convertList(response.body, (result) => Task.fromJson(result));
     });
   }
