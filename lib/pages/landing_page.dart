@@ -11,6 +11,7 @@ import '../components/SentryModal.dart';
 import '../components/TaskTile.dart';
 import '../components/pagestatus.dart';
 import '../models/task.dart';
+import 'package:home_widget/home_widget.dart';
 
 class HomeScreenWidget extends StatefulWidget {
   HomeScreenWidget({Key? key}) : super(key: key);
@@ -260,8 +261,6 @@ class LandingPageState extends State<LandingPage> {
       if (showOnlyDueDateTasks) {
         filterStrings.add("due_date > 0001-01-01 00:00");
       }
-      print('IM GONNA DEBUUUUG');
-      // print(filterStrings);
       return global.taskService.getByFilterString(filterStrings.join(" && "), {
         "sort_by": ["due_date", "id"],
         "order_by": ["asc", "desc"],
@@ -271,6 +270,7 @@ class LandingPageState extends State<LandingPage> {
   }
 
   Future<void> _handleTaskList(List<Task>? taskList) {
+    print(taskList?[0].title);
     if (taskList != null && taskList.isEmpty) {
       setState(() {
         landingPageStatus = PageStatus.empty;
@@ -280,6 +280,10 @@ class LandingPageState extends State<LandingPage> {
     //taskList.forEach((task) {task.list = lists.firstWhere((element) => element.id == task.list_id);});
     setState(() {
       if (taskList != null) {
+        for (var task in taskList) {
+          HomeWidget.saveWidgetData<String>(task.id.toString(), task.title);
+        };
+        print('IM GONNA DEBUUUUG');
         _tasks = taskList;
         landingPageStatus = PageStatus.success;
       } else {
