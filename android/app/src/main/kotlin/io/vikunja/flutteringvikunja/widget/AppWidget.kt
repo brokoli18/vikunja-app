@@ -1,4 +1,4 @@
-package com.example.widget_test.widget
+package io.vikunja.flutteringvikunja
 
 import HomeWidgetGlanceState
 import HomeWidgetGlanceStateDefinition
