@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:vikunja_app/global.dart';
-import 'package:vikunja_app/service/services.dart';
+// import 'package:vikunja_app/service/services.dart';
 
 import 'dart:developer';
 
@@ -12,6 +12,7 @@ import '../components/SentryModal.dart';
 import '../components/TaskTile.dart';
 import '../components/pagestatus.dart';
 import '../models/task.dart';
+import '../service/updateWidget.dart';
 
 class HomeScreenWidget extends StatefulWidget {
   HomeScreenWidget({Key? key}) : super(key: key);
@@ -51,7 +52,7 @@ class LandingPageState extends State<LandingPage> {
         _addItemDialog(context);
         break;
       case "open_add_task_with_text":
-        print("open_add_task_with_text: ${method[1]}");
+        // print("open_add_task_with_text: ${method[1]}");
         _addItemDialog(context, prefilledTitle: method[1]);
         break;
     }
@@ -231,6 +232,7 @@ class LandingPageState extends State<LandingPage> {
   }
 
   Future<void> _loadList(BuildContext context) {
+    print('Starting the _loadList function');
     _tasks = [];
     landingPageStatus = PageStatus.loading;
     // FIXME: loads and reschedules tasks each time list is updated
@@ -255,12 +257,12 @@ class LandingPageState extends State<LandingPage> {
           "sort_by": ["due_date", "id"],
           "order_by": ["asc", "desc"],
         }).then<Future<void>?>((response) => _handleTaskList(response?.body));
-        ;
       }
       List<String> filterStrings = ["done = false"];
       if (showOnlyDueDateTasks) {
         filterStrings.add("due_date > 0001-01-01 00:00");
       }
+      print('About To Filter');
       return global.taskService.getByFilterString(filterStrings.join(" && "), {
         "sort_by": ["due_date", "id"],
         "order_by": ["asc", "desc"],
@@ -270,12 +272,14 @@ class LandingPageState extends State<LandingPage> {
   }
 
   Future<void> _handleTaskList(List<Task>? taskList) {
+    print('Handling Tasks');
     if (taskList != null && taskList.isEmpty) {
       setState(() {
         landingPageStatus = PageStatus.empty;
       });
       return Future.value();
     }
+    updateWidgetTasks(taskList);
     //taskList.forEach((task) {task.list = lists.firstWhere((element) => element.id == task.list_id);});
     setState(() {
       if (taskList != null) {

@@ -32,7 +32,8 @@ void updateWidgetTasks(List<Task>? tasklist) async {
   // Update the widget
     HomeWidget.updateWidget(
       name: 'AppWidget',
-      androidName: '.widget.MyAppWidgetReceiver',
+      // androidName: '.widget.MyAppWidgetReceiver',
+      qualifiedAndroidName: 'io.vikunja.flutteringvikunja.AppWidgetReciever',
     );
   
 }
