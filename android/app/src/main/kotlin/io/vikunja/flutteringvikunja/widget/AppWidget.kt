@@ -3,6 +3,7 @@ package io.vikunja.flutteringvikunja
 import HomeWidgetGlanceState
 import HomeWidgetGlanceStateDefinition
 import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -45,13 +46,29 @@ class AppWidget : GlanceAppWidget() {
         }
     }
 
+//    @Composable
+//    private fun constructArray() {
+//        val prefs = currentState.preferences
+//        val numTasks = prefs.GetInt("numTasks", 0)
+//
+//    }
+
     @Composable
     private fun GlanceContent(context: Context, currentState: HomeWidgetGlanceState) {
-        val prefs = currentState.preferences
-        val things = arrayListOf("11:22", "12:24", "13:13", "14:14", "14:16", "15:16")
-        val counter = prefs.getString("counter", "Whatever")
-        val size = LocalSize.current
-        print(size)
+       val prefs = currentState.preferences
+       val things = arrayListOf("11:22", "12:24", "13:13", "14:14", "14:16", "15:16")
+       val numTasks = prefs.getInt("numTasks", 0)
+       things.add(numTasks.toString())
+//
+//        // Gonna get data and see what it is
+//        var hello = prefs.getStringSet("1", null);
+//        if (hello != null) {
+//            hello::class.simpleName?.let { Log.d("widget", it) }
+//            Log.d("widget", "Logging")
+//        } else {
+//            Log.d("widget", "Its EMPTY")
+//        }
+
         Column {
             MyTopBar()
             LazyColumn(modifier = GlanceModifier.background(Color.White)) {

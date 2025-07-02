@@ -24,9 +24,13 @@ void updateWidgetTasks(List<Task>? tasklist) async {
   // Set the number of tasks
   HomeWidget.saveWidgetData('numTasks', todayTasks.length);
   DateFormat timeFormat = DateFormat("HH:mm");
+  var  num = 0;
   for (var task in todayTasks) {
+    num ++;
+    print(num.toString());
     var widgetTask = [timeFormat.format(task.dueDate!), task.title];
-    HomeWidget.saveWidgetData(task.id.toString(), widgetTask);
+    print('ABCDEFG');
+    HomeWidget.saveWidgetData(num.toString(), widgetTask);
   }
 
   // Update the widget

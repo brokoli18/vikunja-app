@@ -52,7 +52,6 @@ class LandingPageState extends State<LandingPage> {
         _addItemDialog(context);
         break;
       case "open_add_task_with_text":
-        // print("open_add_task_with_text: ${method[1]}");
         _addItemDialog(context, prefilledTitle: method[1]);
         break;
     }
@@ -232,7 +231,6 @@ class LandingPageState extends State<LandingPage> {
   }
 
   Future<void> _loadList(BuildContext context) {
-    print('Starting the _loadList function');
     _tasks = [];
     landingPageStatus = PageStatus.loading;
     // FIXME: loads and reschedules tasks each time list is updated
@@ -262,7 +260,6 @@ class LandingPageState extends State<LandingPage> {
       if (showOnlyDueDateTasks) {
         filterStrings.add("due_date > 0001-01-01 00:00");
       }
-      print('About To Filter');
       return global.taskService.getByFilterString(filterStrings.join(" && "), {
         "sort_by": ["due_date", "id"],
         "order_by": ["asc", "desc"],
@@ -272,7 +269,6 @@ class LandingPageState extends State<LandingPage> {
   }
 
   Future<void> _handleTaskList(List<Task>? taskList) {
-    print('Handling Tasks');
     if (taskList != null && taskList.isEmpty) {
       setState(() {
         landingPageStatus = PageStatus.empty;
