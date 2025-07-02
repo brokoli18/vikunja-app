@@ -10,7 +10,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
-import androidx.glance.LocalSize
+import es.antonborri.home_widget.HomeWidgetPlugin
 import androidx.glance.appwidget.CheckBox
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.SizeMode
@@ -23,15 +23,14 @@ import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
 import androidx.glance.layout.Column
 import androidx.glance.layout.Row
-import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.height
 import androidx.glance.layout.padding
-import androidx.glance.layout.width
 import androidx.glance.state.GlanceStateDefinition
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
+import com.google.gson.Gson
 
 
 class AppWidget : GlanceAppWidget() {
@@ -55,16 +54,28 @@ class AppWidget : GlanceAppWidget() {
 
     @Composable
     private fun GlanceContent(context: Context, currentState: HomeWidgetGlanceState) {
-       val prefs = currentState.preferences
-       val things = arrayListOf("11:22", "12:24", "13:13", "14:14", "14:16", "15:16")
-       val numTasks = prefs.getInt("numTasks", 0)
-       things.add(numTasks.toString())
-//
+        val prefs = currentState.preferences
+        val tasks: MutableList<String> = ArrayList()
+//        val things = arrayListOf("11:22", "12:24", "13:13", "14:14", "14:16", "15:16")
+        // First work out how many tasks we gotta pull down
+        val numTasks = prefs.getInt("numTasks", 0)
+
+        // Extract all the tasks and put them into that array
+        for (i in 1..numTasks) {
+            prefs.getString(i.toString(), null)?.let { tasks.add(it) }
+        }
+
 //        // Gonna get data and see what it is
-//        var hello = prefs.getStringSet("1", null);
+//        val hello = prefs.getString("1", null)
+//        val gson = Gson()
+//        val task = gson.fromJson(hello, ArrayList::class.java) as ArrayList<String>
+//        Log.d("widget", task[0])
+//        Log.d("widget", task[1])
+
 //        if (hello != null) {
 //            hello::class.simpleName?.let { Log.d("widget", it) }
 //            Log.d("widget", "Logging")
+//            Log.d("widget", hello)
 //        } else {
 //            Log.d("widget", "Its EMPTY")
 //        }
@@ -72,8 +83,8 @@ class AppWidget : GlanceAppWidget() {
         Column {
             MyTopBar()
             LazyColumn(modifier = GlanceModifier.background(Color.White)) {
-                items(things) { num ->
-                    RenderRow(num)
+                items(tasks) { task ->
+                    RenderRow(task)
                 }
             }
         }
@@ -96,7 +107,9 @@ class AppWidget : GlanceAppWidget() {
     }
 
     @Composable
-    private fun RenderRow(number: String) {
+    private fun RenderRow(taskJson: String) {
+        val gson = Gson()
+        val task = gson.fromJson(taskJson, ArrayList::class.java) as ArrayList<String>
         Row(modifier = GlanceModifier.fillMaxWidth().padding(8.dp)) {
             CheckBox(
                 checked = false,
@@ -107,7 +120,7 @@ class AppWidget : GlanceAppWidget() {
                 modifier = GlanceModifier.padding(horizontal = 8.dp)
             ) {
                 Text(
-                    text = number,
+                    text = task[0],
                     style = TextStyle(
                         fontSize = 18.sp
                     )
@@ -117,7 +130,7 @@ class AppWidget : GlanceAppWidget() {
                 modifier = GlanceModifier.padding(horizontal = 8.dp)
             ) {
                 Text(
-                    text = "This would be a task description.",
+                    text = task[1],
                     style = TextStyle(
                         fontSize = 18.sp
                     )

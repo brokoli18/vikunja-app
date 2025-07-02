@@ -1,6 +1,7 @@
 import 'package:vikunja_app/models/task.dart';
 import 'package:home_widget/home_widget.dart';
 import 'package:intl/intl.dart';
+import 'dart:convert';
 
 // I expect a list of tasks here, when I get it I get:
 // Filter tasks and get only the ones due today
@@ -27,10 +28,9 @@ void updateWidgetTasks(List<Task>? tasklist) async {
   var  num = 0;
   for (var task in todayTasks) {
     num ++;
-    print(num.toString());
     var widgetTask = [timeFormat.format(task.dueDate!), task.title];
-    print('ABCDEFG');
-    HomeWidget.saveWidgetData(num.toString(), widgetTask);
+    final jsonString = jsonEncode(widgetTask);
+    HomeWidget.saveWidgetData(num.toString(), jsonString);
   }
 
   // Update the widget
