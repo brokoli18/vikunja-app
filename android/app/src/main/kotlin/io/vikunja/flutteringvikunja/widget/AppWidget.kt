@@ -61,24 +61,15 @@ class AppWidget : GlanceAppWidget() {
         val numTasks = prefs.getInt("numTasks", 0)
 
         // Extract all the tasks and put them into that array
+        // Log.d("widget", numTasks.toString())
         for (i in 1..numTasks) {
-            prefs.getString(i.toString(), null)?.let { tasks.add(it) }
+            val task = prefs.getString(i.toString(), null)
+            if (task != null) {
+                // Log.d("widget", task)
+            }
+            task?.let { tasks.add(it) }
         }
 
-//        // Gonna get data and see what it is
-//        val hello = prefs.getString("1", null)
-//        val gson = Gson()
-//        val task = gson.fromJson(hello, ArrayList::class.java) as ArrayList<String>
-//        Log.d("widget", task[0])
-//        Log.d("widget", task[1])
-
-//        if (hello != null) {
-//            hello::class.simpleName?.let { Log.d("widget", it) }
-//            Log.d("widget", "Logging")
-//            Log.d("widget", hello)
-//        } else {
-//            Log.d("widget", "Its EMPTY")
-//        }
 
         Column {
             MyTopBar()
@@ -93,10 +84,7 @@ class AppWidget : GlanceAppWidget() {
     @Composable
     private fun MyTopBar() {
         Box(
-            modifier = GlanceModifier
-                .fillMaxWidth()
-                .height(50.dp)
-                .background(Color.Blue),
+            modifier = GlanceModifier.fillMaxWidth().height(50.dp).background(Color.Blue),
             contentAlignment = Alignment.Center,
         ) {
             Text(
@@ -120,8 +108,7 @@ class AppWidget : GlanceAppWidget() {
                 modifier = GlanceModifier.padding(horizontal = 8.dp)
             ) {
                 Text(
-                    text = task[0],
-                    style = TextStyle(
+                    text = task[0], style = TextStyle(
                         fontSize = 18.sp
                     )
                 )
@@ -130,8 +117,7 @@ class AppWidget : GlanceAppWidget() {
                 modifier = GlanceModifier.padding(horizontal = 8.dp)
             ) {
                 Text(
-                    text = task[1],
-                    style = TextStyle(
+                    text = task[1], style = TextStyle(
                         fontSize = 18.sp
                     )
                 )

@@ -11,6 +11,7 @@ import 'package:rxdart/subjects.dart' as rxSub;
 import 'package:vikunja_app/service/services.dart';
 
 import '../models/task.dart';
+import '../service/updateWidget.dart';
 
 class NotificationClass {
   final int? id;
@@ -120,6 +121,7 @@ class NotificationClass {
 
   Future<void> scheduleDueNotifications(TaskService taskService,
       {List<Task>? tasks}) async {
+    print("Running 'scheduleDueNotifications");
     if (tasks == null)
       tasks = await taskService.getByFilterString(
           "done=false && (due_date > now || reminders > now)", {
@@ -157,5 +159,6 @@ class NotificationClass {
       }
     }
     print("notifications scheduled successfully");
+    updateWidgetTasks(tasks);
   }
 }

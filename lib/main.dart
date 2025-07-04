@@ -45,12 +45,12 @@ void callbackDispatcher() {
     print(
         "Native called background task: $task"); //simpleTask will be emitted here.
     if (task == "update-tasks" && inputData != null) {
+      print("DEBUG-WDIGET: Updating tasks");
       Client client = Client(null,
           token: inputData["client_token"],
           base: inputData["client_base"],
           authenticated: true);
       tz.initializeTimeZones();
-
       return SettingsManager(new FlutterSecureStorage())
           .getIgnoreCertificates()
           .then((value) async {
@@ -111,7 +111,7 @@ void main() async {
   }
   try {
     if (!kIsWeb) {
-      Workmanager().initialize(callbackDispatcher, isInDebugMode: false);
+      Workmanager().initialize(callbackDispatcher, isInDebugMode: true);
     }
   } catch (e) {
     print("Failed to initialize workmanager: $e");

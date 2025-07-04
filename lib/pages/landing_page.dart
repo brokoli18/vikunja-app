@@ -268,14 +268,14 @@ class LandingPageState extends State<LandingPage> {
     }); //.onError((error, stackTrace) {print("error");});
   }
 
-  Future<void> _handleTaskList(List<Task>? taskList) {
+  Future<void> _handleTaskList(List<Task>? taskList) async {
     if (taskList != null && taskList.isEmpty) {
       setState(() {
         landingPageStatus = PageStatus.empty;
       });
       return Future.value();
     }
-    updateWidgetTasks(taskList);
+    // updateWidgetTasks(taskList);
     //taskList.forEach((task) {task.list = lists.firstWhere((element) => element.id == task.list_id);});
     setState(() {
       if (taskList != null) {
