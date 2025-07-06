@@ -65,7 +65,6 @@ void callbackDispatcher() {
             .then((value) => Future.value(true));
       });
     } else if (task == "refresh-token") {
-      print("running refresh from workmanager");
       final FlutterSecureStorage _storage = new FlutterSecureStorage();
 
       var currentUser = await _storage.read(key: 'currentUser');
@@ -86,6 +85,14 @@ void callbackDispatcher() {
         _storage.write(key: currentUser, value: newToken);
       }
       return Future.value(true);
+ //    } else if (task == "update widget") {
+ //
+ //       TaskAPIService taskService = TaskAPIService(client);
+ //       var  tasks = await taskService.getByFilterString(
+ //          "done=false && (due_date > now || reminders > now)", {
+ //        "filter_include_nulls": ["false"]
+ //      });
+ // 
     } else {
       return Future.value(true);
     }

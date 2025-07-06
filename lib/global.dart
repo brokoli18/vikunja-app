@@ -93,9 +93,8 @@ class VikunjaGlobalState extends State<VikunjaGlobal> {
     }
     Workmanager().cancelAll().then((value) {
       settingsManager.getWorkmanagerDuration().then((duration) {
-        var minmins = duration.inMinutes;
         if (duration.inMinutes > 0) {
-          print('DURATION: $minmins');
+          print('Scheduling Periodic task');
           Workmanager().registerPeriodicTask("update-tasks", "update-tasks",
               frequency: duration,
               constraints: Constraints(
