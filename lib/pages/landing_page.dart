@@ -268,7 +268,7 @@ class LandingPageState extends State<LandingPage> {
     }); //.onError((error, stackTrace) {print("error");});
   }
 
-  Future<void> _handleTaskList(List<Task>? taskList) async {
+  Future<void> _handleTaskList(List<Task>? taskList) {
     if (taskList != null && taskList.isEmpty) {
       setState(() {
         landingPageStatus = PageStatus.empty;

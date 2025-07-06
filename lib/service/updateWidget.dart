@@ -27,7 +27,6 @@ List<Task> filterForTodayTasks(List<Task> tasks) {
 
 
 void updateWidgetTasks(List<Task>? tasklist) async {
-  print('DEBUG-WIDGET: Updating the widget');
   var todayTasks = filterForTodayTasks(tasklist!);
   
   // Set the number of tasks
@@ -49,14 +48,3 @@ void updateWidgetTasks(List<Task>? tasklist) async {
     );
   
 }
-
-// void backgroundWidgetUpdate(TaskService taskService) async {
-//   // First I need to actually get all the tasks  
-//     var taskList = await taskService.getByFilterString(
-//           "done=false && (due_date > now || reminders > now)", {
-//         "filter_include_nulls": ["false"]
-//       });
-//
-//   var todayTasks = filterForTodayTasks(taskList!);
-//
-// }

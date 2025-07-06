@@ -37,28 +37,18 @@ class AppWidget : GlanceAppWidget() {
         }
     }
 
-//    @Composable
-//    private fun constructArray() {
-//        val prefs = currentState.preferences
-//        val numTasks = prefs.GetInt("numTasks", 0)
-//
-//    }
 
     @Composable
     private fun GlanceContent(context: Context, currentState: HomeWidgetGlanceState) {
         val prefs = currentState.preferences
         val tasks: MutableList<String> = ArrayList()
-//        val things = arrayListOf("11:22", "12:24", "13:13", "14:14", "14:16", "15:16")
+
         // First work out how many tasks we gotta pull down
         val numTasks = prefs.getInt("numTasks", 0)
 
         // Extract all the tasks and put them into that array
-        // Log.d("widget", numTasks.toString())
         for (i in 1..numTasks) {
             val task = prefs.getString(i.toString(), null)
-            if (task != null) {
-                // Log.d("widget", task)
-            }
             task?.let { tasks.add(it) }
         }
 

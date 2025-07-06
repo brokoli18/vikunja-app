@@ -121,7 +121,6 @@ class NotificationClass {
 
   Future<void> scheduleDueNotifications(TaskService taskService,
       {List<Task>? tasks}) async {
-    print("Running 'scheduleDueNotifications");
     if (tasks == null)
       tasks = await taskService.getByFilterString(
           "done=false && (due_date > now || reminders > now)", {
@@ -155,7 +154,7 @@ class NotificationClass {
           platformChannelSpecificsDueDate,
           id: task.id,
         );
-        print("scheduled  DUE notification for time " + task.dueDate!.toString());
+        // print("scheduled  DUE notification for time " + task.dueDate!.toString());
       }
     }
     print("notifications scheduled successfully");

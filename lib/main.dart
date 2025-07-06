@@ -45,7 +45,6 @@ void callbackDispatcher() {
     print(
         "Native called background task: $task"); //simpleTask will be emitted here.
     if (task == "update-tasks" && inputData != null) {
-      print("DEBUG-WIDGET: Updating tasks");
       Client client = Client(null,
           token: inputData["client_token"],
           base: inputData["client_base"],
@@ -85,14 +84,6 @@ void callbackDispatcher() {
         _storage.write(key: currentUser, value: newToken);
       }
       return Future.value(true);
- //    } else if (task == "update widget") {
- //
- //       TaskAPIService taskService = TaskAPIService(client);
- //       var  tasks = await taskService.getByFilterString(
- //          "done=false && (due_date > now || reminders > now)", {
- //        "filter_include_nulls": ["false"]
- //      });
- // 
     } else {
       return Future.value(true);
     }
@@ -118,7 +109,7 @@ void main() async {
   }
   try {
     if (!kIsWeb) {
-      Workmanager().initialize(callbackDispatcher, isInDebugMode: true);
+      Workmanager().initialize(callbackDispatcher, isInDebugMode: false);
     }
   } catch (e) {
     print("Failed to initialize workmanager: $e");
