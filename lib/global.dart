@@ -98,7 +98,7 @@ class VikunjaGlobalState extends State<VikunjaGlobal> {
           Workmanager().registerPeriodicTask("update-tasks", "update-tasks",
               frequency: duration,
               constraints: Constraints(
-                  networkType: NetworkType.connected, requiresDeviceIdle: true),
+                  networkType: NetworkType.connected),
               initialDelay: Duration(seconds: 15),
               inputData: {
                 "client_token": client.token,

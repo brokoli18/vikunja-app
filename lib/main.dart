@@ -45,7 +45,7 @@ void callbackDispatcher() {
     print(
         "Native called background task: $task"); //simpleTask will be emitted here.
     if (task == "update-tasks" && inputData != null) {
-      print("DEBUG-WDIGET: Updating tasks");
+      print("DEBUG-WIDGET: Updating tasks");
       Client client = Client(null,
           token: inputData["client_token"],
           base: inputData["client_base"],

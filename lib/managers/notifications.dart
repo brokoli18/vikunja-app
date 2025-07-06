@@ -160,7 +160,10 @@ class NotificationClass {
     }
     print("notifications scheduled successfully");
     try {
-      updateWidgetTasks(tasks);
+
+      // I need to provide all tasks for today for the widget, not just tasks that are due > now
+      var widget_tasks = await taskService.getByFilterString("due_date > 0001-01-01 00:00 && done = false");
+      updateWidgetTasks(widget_tasks);
     } catch (e) {
       print(e);      
     }
