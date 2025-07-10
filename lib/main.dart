@@ -10,6 +10,7 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:vikunja_app/api/task_implementation.dart';
 import 'package:vikunja_app/api/client.dart';
 import 'package:vikunja_app/service/services.dart';
+import 'package:vikunja_app/service/updateWidget.dart';
 import 'package:vikunja_app/stores/project_store.dart';
 import 'package:workmanager/workmanager.dart';
 import 'package:vikunja_app/global.dart';
@@ -18,6 +19,7 @@ import 'package:vikunja_app/pages/user/login.dart';
 import 'package:vikunja_app/theme/theme.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:home_widget/home_widget.dart';
 
 import 'api/user_implementation.dart';
 import 'managers/notifications.dart';
@@ -33,6 +35,15 @@ class IgnoreCertHttpOverrides extends HttpOverrides {
   HttpClient createHttpClient(SecurityContext? context) {
     return super.createHttpClient(context)
       ..badCertificateCallback = (_, __, ___) => ignoreCerts;
+  }
+}
+
+
+@pragma("vm:entry-point")
+Future<void> backgroundCallback(Uri? uri) async {
+  print("Running Background callback");
+  if (uri?.host == "completeTask") {
+    completeTask();
   }
 }
 
@@ -113,6 +124,12 @@ void main() async {
     }
   } catch (e) {
     print("Failed to initialize workmanager: $e");
+  }
+  try {
+    await HomeWidget.registerInteractivityCallback(backgroundCallback);
+    print('Callback registered successfully');
+  } catch (e) {
+    print("Failed to initialise widget callback");
   }
   runApp(ChangeNotifierProvider<ProjectProvider>(
       create: (_) => new ProjectProvider(),

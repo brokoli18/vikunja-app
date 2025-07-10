@@ -276,7 +276,6 @@ class LandingPageState extends State<LandingPage> {
       return Future.value();
     }
     updateWidgetTasks(taskList);
-    //taskList.forEach((task) {task.list = lists.firstWhere((element) => element.id == task.list_id);});
     setState(() {
       if (taskList != null) {
         _tasks = taskList;

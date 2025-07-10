@@ -94,7 +94,7 @@ class NotificationClass {
         tz.TZDateTime.from(scheduledTime, tz.getLocation(currentTimeZone));
     if (time.difference(tz.TZDateTime.now(tz.getLocation(currentTimeZone))) <
         Duration.zero) return;
-    print("scheduled notification for time " + time.toString());
+    // print("scheduled notification for time " + time.toString());
     await notifsPlugin.zonedSchedule(
         id, title, description, time, platformChannelSpecifics,
         androidScheduleMode: notifs.AndroidScheduleMode.exactAllowWhileIdle,
@@ -157,7 +157,7 @@ class NotificationClass {
         // print("scheduled  DUE notification for time " + task.dueDate!.toString());
       }
     }
-    print("notifications scheduled successfully");
+    // print("notifications scheduled successfully");
     try {
       // I need to provide all tasks for today for the widget, not just tasks that are due > now
       var widget_tasks = await taskService
