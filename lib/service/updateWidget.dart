@@ -11,9 +11,9 @@ import 'dart:convert';
 // Update shared preferences using the home_widget package
 // First item needs to be the number of tasks that need to be saved
 
-void completeTask() {
-  var num = HomeWidget.getWidgetData("completeTask", defaultValue: null);
-  if (num == null) {
+void completeTask() async {
+  var num = await HomeWidget.getWidgetData("completeTask", defaultValue: "null");
+  if (num == "null") {
     print("Its empty");
     return;
   }
@@ -43,6 +43,7 @@ void updateWidgetTasks(List<Task>? tasklist) async {
   DateFormat timeFormat = DateFormat("HH:mm");
   var num = 0;
   for (var task in todayTasks) {
+    print(task.id);
     num++;
     var widgetTask = [timeFormat.format(task.dueDate!), task.title, num.toString()];
     final jsonString = jsonEncode(widgetTask);

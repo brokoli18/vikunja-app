@@ -26,11 +26,7 @@ import androidx.glance.unit.ColorProvider
 import com.google.gson.Gson
 import es.antonborri.home_widget.HomeWidgetBackgroundIntent
 import android.net.Uri
-import es.antonborri.home_widget.HomeWidgetPlugin
 import androidx.core.content.edit
-import android.util.Log
-import androidx.glance.action.ActionParameters
-import androidx.glance.appwidget.action.ActionCallback
 
 
 class AppWidget : GlanceAppWidget() {
@@ -45,10 +41,11 @@ class AppWidget : GlanceAppWidget() {
         }
     }
 
-    private fun doneTask(context: Context, prefs: SharedPreferences, taskNum: String) {
-        Log.d("WIDGET", "Running doneTask in kotlin")
+    private fun doneTask(context: Context, prefs: SharedPreferences, taskTitle: String) {
+//        Log.d("WIDGET", "Running doneTask in kotlin")
         prefs.edit {
-            putString("completeTask", taskNum)
+            putString("completeTask", taskTitle)
+            commit()
         }
         val backgroundIntent = HomeWidgetBackgroundIntent.getBroadcast(
             context,
@@ -102,7 +99,7 @@ class AppWidget : GlanceAppWidget() {
         Row(modifier = GlanceModifier.fillMaxWidth().padding(8.dp)) {
             CheckBox(
                 checked = false,
-                onCheckedChange = { doneTask(context, prefs, taskJson[2].toString())},
+                onCheckedChange = { doneTask(context, prefs, taskJson[1].toString())},
                 modifier = GlanceModifier.padding(horizontal = 8.dp)
             )
             Box(
