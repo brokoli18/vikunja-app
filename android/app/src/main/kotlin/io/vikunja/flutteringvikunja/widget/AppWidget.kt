@@ -26,6 +26,7 @@ import androidx.glance.unit.ColorProvider
 import com.google.gson.Gson
 import es.antonborri.home_widget.HomeWidgetBackgroundIntent
 import android.net.Uri
+import android.util.Log
 import androidx.core.content.edit
 
 
@@ -41,10 +42,10 @@ class AppWidget : GlanceAppWidget() {
         }
     }
 
-    private fun doneTask(context: Context, prefs: SharedPreferences, taskTitle: String) {
-//        Log.d("WIDGET", "Running doneTask in kotlin")
+    private fun doneTask(context: Context, prefs: SharedPreferences, taskID: String) {
+        Log.d("WIDGET", taskID)
         prefs.edit {
-            putString("completeTask", taskTitle)
+            putString("completeTask", taskID)
             commit()
         }
         val backgroundIntent = HomeWidgetBackgroundIntent.getBroadcast(
@@ -59,23 +60,43 @@ class AppWidget : GlanceAppWidget() {
         val prefs = currentState.preferences
         val tasks: MutableList<String> = ArrayList()
 
-        // First work out how many tasks we gotta pull down
-        val numTasks = prefs.getInt("numTasks", 0)
+        // Get an array of the widget tasks we gotta display
+        val taskIDChars = prefs.getString("widgetTaskIDs", null)
+        var taskIDs: List<String>  = emptyList()
+        if (taskIDChars != null) {
+            val noBrackets = taskIDChars.substring(1, taskIDChars.length - 1)
+            taskIDs = noBrackets.split(",")
+
+        } else {
+            Log.d("Widget", "There was a problem getting the widget ids")
+        }
 
         // Extract all the tasks and put them into that array
-        for (i in 1..numTasks) {
-            val task = prefs.getString(i.toString(), null)
-            task?.let { tasks.add(it) }
+        if (taskIDs.isNotEmpty()) {
+            for (taskId in taskIDs) {
+                val task = prefs.getString(taskId.trim(), null)
+                task?.let { tasks.add(it) }
+            }
         }
 
 
         Column {
             MyTopBar()
-            LazyColumn(modifier = GlanceModifier.background(Color.White)) {
-                items(tasks) { task ->
-                    RenderRow(context, task, prefs)
+            if (tasks.isNotEmpty()) {
+//                Log.d("Widget", tasks.toString())
+                LazyColumn(modifier = GlanceModifier.background(Color.White)) {
+                    items(tasks) { task ->
+                        RenderRow(context, task, prefs)
+                    }
+                }
+            } else {
+                Box(modifier = GlanceModifier.background(Color.White)) {
+                    Text(
+                        text = "There are no tasks due today"
+                    )
                 }
             }
+
         }
     }
 
@@ -95,18 +116,23 @@ class AppWidget : GlanceAppWidget() {
     @Composable
     private fun RenderRow(context: Context, taskJson: String, prefs : SharedPreferences) {
         val gson = Gson()
-        val task = gson.fromJson(taskJson, ArrayList::class.java) as ArrayList<String>
+        val task = gson.fromJson(taskJson, ArrayList::class.java) as ArrayList<*>
+
+        // The task ID will be a double here even though it isnt immidiately obvious. This will have a decimal that needs to be removed
+        val dubID : Double = task[2] as Double // Unsafe cast
+        val taskID = dubID.toInt()
+
         Row(modifier = GlanceModifier.fillMaxWidth().padding(8.dp)) {
             CheckBox(
                 checked = false,
-                onCheckedChange = { doneTask(context, prefs, taskJson[1].toString())},
+                onCheckedChange = { doneTask(context, prefs, taskID.toString())},
                 modifier = GlanceModifier.padding(horizontal = 8.dp)
             )
             Box(
                 modifier = GlanceModifier.padding(horizontal = 8.dp)
             ) {
                 Text(
-                    text = task[0], style = TextStyle(
+                    text = task[0].toString(), style = TextStyle(
                         fontSize = 18.sp
                     )
                 )
@@ -115,7 +141,7 @@ class AppWidget : GlanceAppWidget() {
                 modifier = GlanceModifier.padding(horizontal = 8.dp)
             ) {
                 Text(
-                    text = task[1], style = TextStyle(
+                    text = task[1].toString(), style = TextStyle(
                         fontSize = 18.sp
                     )
                 )
@@ -123,22 +149,3 @@ class AppWidget : GlanceAppWidget() {
         }
     }
 }
-
-//class InteractiveAction : ActionCallback {
-//    override suspend fun onAction(
-//        context: Context,
-//        glanceId: GlanceId,
-//        parameters: ActionParameters
-//    ) {
-//        Log.d("WIDGET", "Running doneTask in kotlin")
-//        prefs.edit {
-//            putString("completeTask", taskNum)
-//        }
-//        Log.d("WIDGET", context.applicationInfo.toString())
-//        val backgroundIntent = HomeWidgetBackgroundIntent.getBroadcast(
-//            context,
-//            Uri.parse("appWidget://completeTask")
-//        )
-//        backgroundIntent.send()
-//    }
-//}

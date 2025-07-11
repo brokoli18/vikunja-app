@@ -34,23 +34,24 @@ List<Task> filterForTodayTasks(List<Task> tasks) {
 }
 
 void updateWidgetTasks(List<Task>? tasklist) async {
+  // print('Running UpdateWidget');
   var todayTasks = filterForTodayTasks(tasklist!);
 
   // Set the number of tasks
   HomeWidget.saveWidgetData('numTasks', todayTasks.length);
-  var completedTask = await HomeWidget.getWidgetData('completeTask');
-  print(completedTask);
+  // var completedTask = await HomeWidget.getWidgetData('completeTask');
   DateFormat timeFormat = DateFormat("HH:mm");
-  var num = 0;
+  var widgetTaskIDs = [];
   for (var task in todayTasks) {
-    print(task.id);
-    num++;
-    var widgetTask = [timeFormat.format(task.dueDate!), task.title, num.toString()];
+    widgetTaskIDs.add(task.id);
+    var widgetTask = [timeFormat.format(task.dueDate!), task.title, task.id];
     final jsonString = jsonEncode(widgetTask);
-    HomeWidget.saveWidgetData(num.toString(), jsonString);
+    // print(jsonString);
+    HomeWidget.saveWidgetData(task.id.toString(), jsonString);
+    // print(await HomeWidget.getWidgetData(task.id.toString()));
   }
 
-  print('Updating Widget');
+  HomeWidget.saveWidgetData("widgetTaskIDs", widgetTaskIDs.toString());
 
   // Update the widget
   HomeWidget.updateWidget(
