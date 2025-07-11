@@ -229,7 +229,7 @@ class VikunjaApp extends StatelessWidget {
                         print("sentry enabled");
                         SentryFlutter.init((options) {
                           options.dsn =
-                              'https://a09618e3bb30e03b93233c21973df869@o1047380.ingest.us.sentry.io/4507995557134336';
+                              'https://c1e0c35091f22dfae019ae55469bcf58@o4509649250877440.ingest.de.sentry.io/4509649257300048';
                           options.tracesSampleRate = 1.0;
                           options.profilesSampleRate = 1.0;
                         }).then((_) {
