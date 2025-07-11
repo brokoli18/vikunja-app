@@ -260,6 +260,7 @@ class LandingPageState extends State<LandingPage> {
       if (showOnlyDueDateTasks) {
         filterStrings.add("due_date > 0001-01-01 00:00");
       }
+      updateWidgetTasks(global.taskService) ;
       return global.taskService.getByFilterString(filterStrings.join(" && "), {
         "sort_by": ["due_date", "id"],
         "order_by": ["asc", "desc"],
@@ -275,7 +276,7 @@ class LandingPageState extends State<LandingPage> {
       });
       return Future.value();
     }
-    updateWidgetTasks(taskList);
+    // updateWidgetTasks(taskList);
     setState(() {
       if (taskList != null) {
         _tasks = taskList;

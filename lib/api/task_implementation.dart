@@ -28,6 +28,15 @@ class TaskAPIService extends APIService implements TaskService {
   }
 
   @override
+  Future<Task?> getTask(int taskId) {
+    return client.get('/tasks/$taskId').then((response) {
+      if (response == null) return null;
+      return Task.fromJson(response.body);
+    });
+  }
+
+
+  @override
   Future delete(int taskId) {
     return client.delete('/tasks/$taskId');
   }

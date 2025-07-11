@@ -160,6 +160,8 @@ abstract class ProjectViewService {
 abstract class TaskService {
   Future<Task?> get(int taskId);
 
+  Future<Task?> getTask(int taskId);
+
   Future<Task?> update(Task task);
 
   Future delete(int taskId);

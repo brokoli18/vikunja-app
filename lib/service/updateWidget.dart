@@ -1,8 +1,13 @@
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:vikunja_app/api/task_implementation.dart';
 import 'package:vikunja_app/models/task.dart';
 // import 'package:vikunja_app/service/services.dart';
 import 'package:home_widget/home_widget.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
+import 'package:vikunja_app/api/client.dart';
+import 'package:vikunja_app/service/services.dart';
 
 // I expect a list of tasks here, when I get it I get:
 // Filter tasks and get only the ones due today
@@ -12,12 +17,47 @@ import 'dart:convert';
 // First item needs to be the number of tasks that need to be saved
 
 void completeTask() async {
-  var num = await HomeWidget.getWidgetData("completeTask", defaultValue: "null");
-  if (num == "null") {
+  Task? task;
+  var taskID =
+      await HomeWidget.getWidgetData("completeTask", defaultValue: "null");
+  if (taskID == "null") {
     print("Its empty");
     return;
   }
-  print(num);
+  print(taskID);
+
+  // Get my token and auth shit from local storage. Then use that to update the task
+
+  // Need to do the whole setup of the client to etch tasks
+
+  final FlutterSecureStorage _storage = new FlutterSecureStorage();
+  var currentUser = await _storage.read(key: 'currentUser');
+  if (currentUser == null) {
+    // Need to add PROPA LOGGING
+    return;
+  }
+  var token = await _storage.read(key: currentUser);
+
+  var base = await _storage.read(key: '${currentUser}_base');
+  if (token == null || base == null) {
+    return Future.value(true);
+  }
+  Client client = Client(null);
+  client.configure(token: token, base: base, authenticated: true);
+
+  tz.initializeTimeZones();
+  TaskAPIService taskService = TaskAPIService(client);
+
+  print('Requesting task');
+  // Get task , update it locally and then send back to the server. Then update the widget
+  if (taskID != null) {
+    task = await taskService.getTask(int.tryParse(taskID)!);
+    if ( task != null ){
+      taskService.update(task.copyWith(done: true));
+    }
+  }
+  // Get all the tasks again and update widget
+  updateWidgetTasks(taskService);
 }
 
 List<Task> filterForTodayTasks(List<Task> tasks) {
@@ -33,7 +73,10 @@ List<Task> filterForTodayTasks(List<Task> tasks) {
   return todayTasks;
 }
 
-void updateWidgetTasks(List<Task>? tasklist) async {
+void updateWidgetTasks(TaskService taskService) async {
+
+  var tasklist = await taskService
+          .getByFilterString("due_date > 0001-01-01 00:00 && done = false");
   // print('Running UpdateWidget');
   var todayTasks = filterForTodayTasks(tasklist!);
 
@@ -52,11 +95,13 @@ void updateWidgetTasks(List<Task>? tasklist) async {
   }
 
   HomeWidget.saveWidgetData("widgetTaskIDs", widgetTaskIDs.toString());
+  reRenderWidget();
+}
 
-  // Update the widget
+void reRenderWidget() {
   HomeWidget.updateWidget(
     name: 'AppWidget',
-    // androidName: '.widget.MyAppWidgetReceiver',
     qualifiedAndroidName: 'io.vikunja.flutteringvikunja.AppWidgetReciever',
   );
+
 }
