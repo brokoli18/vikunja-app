@@ -38,7 +38,6 @@ class IgnoreCertHttpOverrides extends HttpOverrides {
   }
 }
 
-
 @pragma("vm:entry-point")
 Future<void> backgroundCallback(Uri? uri) async {
   print("Running Background callback");
@@ -125,12 +124,6 @@ void main() async {
   } catch (e) {
     print("Failed to initialize workmanager: $e");
   }
-  try {
-    await HomeWidget.registerInteractivityCallback(backgroundCallback);
-    print('Callback registered successfully');
-  } catch (e) {
-    print("Failed to initialise widget callback");
-  }
   runApp(ChangeNotifierProvider<ProjectProvider>(
       create: (_) => new ProjectProvider(),
       child: VikunjaGlobal(
@@ -144,6 +137,12 @@ void main() async {
           key: UniqueKey(),
         ),
       )));
+  try {
+    await HomeWidget.registerInteractivityCallback(backgroundCallback);
+    print('Callback registered successfully');
+  } catch (e) {
+    print("Failed to initialise widget callback");
+  }
 }
 
 class ThemeModel with ChangeNotifier {

@@ -29,6 +29,8 @@ import android.net.Uri
 import es.antonborri.home_widget.HomeWidgetPlugin
 import androidx.core.content.edit
 import android.util.Log
+import androidx.glance.action.ActionParameters
+import androidx.glance.appwidget.action.ActionCallback
 
 
 class AppWidget : GlanceAppWidget() {
@@ -48,11 +50,11 @@ class AppWidget : GlanceAppWidget() {
         prefs.edit {
             putString("completeTask", taskNum)
         }
-        Log.d("WIDGET", context.applicationInfo.toString())
-        HomeWidgetBackgroundIntent.getBroadcast(
+        val backgroundIntent = HomeWidgetBackgroundIntent.getBroadcast(
             context,
             Uri.parse("appWidget://completeTask")
         )
+        backgroundIntent.send()
     }
 
     @Composable
@@ -124,3 +126,22 @@ class AppWidget : GlanceAppWidget() {
         }
     }
 }
+
+//class InteractiveAction : ActionCallback {
+//    override suspend fun onAction(
+//        context: Context,
+//        glanceId: GlanceId,
+//        parameters: ActionParameters
+//    ) {
+//        Log.d("WIDGET", "Running doneTask in kotlin")
+//        prefs.edit {
+//            putString("completeTask", taskNum)
+//        }
+//        Log.d("WIDGET", context.applicationInfo.toString())
+//        val backgroundIntent = HomeWidgetBackgroundIntent.getBroadcast(
+//            context,
+//            Uri.parse("appWidget://completeTask")
+//        )
+//        backgroundIntent.send()
+//    }
+//}
