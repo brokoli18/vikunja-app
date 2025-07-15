@@ -90,7 +90,7 @@ class AppWidget : GlanceAppWidget() {
                     }
                 }
             } else {
-                Box(modifier = GlanceModifier.background(Color.White)) {
+                Box(modifier = GlanceModifier.fillMaxSize().background(Color.White),  contentAlignment = Alignment.Center) {
                     Text(
                         text = "There are no tasks due today"
                     )
