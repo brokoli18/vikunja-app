@@ -21,10 +21,8 @@ void completeTask() async {
   var taskID =
       await HomeWidget.getWidgetData("completeTask", defaultValue: "null");
   if (taskID == "null") {
-    print("Its empty");
     return;
   }
-  print(taskID);
 
   // Get my token and auth shit from local storage. Then use that to update the task
 
@@ -33,7 +31,6 @@ void completeTask() async {
   final FlutterSecureStorage _storage = new FlutterSecureStorage();
   var currentUser = await _storage.read(key: 'currentUser');
   if (currentUser == null) {
-    // Need to add PROPA LOGGING
     return;
   }
   var token = await _storage.read(key: currentUser);
@@ -48,7 +45,6 @@ void completeTask() async {
   tz.initializeTimeZones();
   TaskAPIService taskService = TaskAPIService(client);
 
-  print('Requesting task');
   // Get task , update it locally and then send back to the server. Then update the widget
   if (taskID != null) {
     task = await taskService.getTask(int.tryParse(taskID)!);
@@ -75,10 +71,10 @@ List<Task> filterForTodayTasks(List<Task> tasks) {
 
 void updateWidgetTasks(TaskService taskService) async {
 
-  var tasklist = await taskService
-          .getByFilterString("due_date > 0001-01-01 00:00 && done = false");
-  // print('Running UpdateWidget');
-  var todayTasks = filterForTodayTasks(tasklist!);
+  var todayTasks = await taskService.getByFilterString("done = false && due_date < now/d+1d");
+  if (todayTasks == null) {
+    return;
+  }
 
   // Set the number of tasks
   HomeWidget.saveWidgetData('numTasks', todayTasks.length);
@@ -89,9 +85,7 @@ void updateWidgetTasks(TaskService taskService) async {
     widgetTaskIDs.add(task.id);
     var widgetTask = [timeFormat.format(task.dueDate!), task.title, task.id];
     final jsonString = jsonEncode(widgetTask);
-    // print(jsonString);
     HomeWidget.saveWidgetData(task.id.toString(), jsonString);
-    // print(await HomeWidget.getWidgetData(task.id.toString()));
   }
 
   HomeWidget.saveWidgetData("widgetTaskIDs", widgetTaskIDs.toString());
