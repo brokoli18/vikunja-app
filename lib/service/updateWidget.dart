@@ -1,12 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:vikunja_app/api/task_implementation.dart';
 import 'package:vikunja_app/models/task.dart';
-// import 'package:vikunja_app/service/services.dart';
 import 'package:home_widget/home_widget.dart';
-import 'package:intl/intl.dart';
-import 'dart:convert';
 import 'package:vikunja_app/api/client.dart';
+import 'package:vikunja_app/models/widgetTask.dart';
 import 'package:vikunja_app/service/services.dart';
 
 // I expect a list of tasks here, when I get it I get:
@@ -23,10 +23,6 @@ void completeTask() async {
   if (taskID == "null") {
     return;
   }
-
-  // Get my token and auth shit from local storage. Then use that to update the task
-
-  // Need to do the whole setup of the client to etch tasks
 
   final FlutterSecureStorage _storage = new FlutterSecureStorage();
   var currentUser = await _storage.read(key: 'currentUser');
@@ -69,23 +65,39 @@ List<Task> filterForTodayTasks(List<Task> tasks) {
   return todayTasks;
 }
 
-void updateWidgetTasks(TaskService taskService) async {
+WidgetTask convertTask(Task task) {
+  // Check if task is for today
+  final now = DateTime.now();
+  final today = DateTime(now.year, now.month, now.day);
 
+  bool wgToday = task.dueDate!.day == today.day ? true : false;
+  bool overdue = task.dueDate!.isBefore(now) ? true : false;
+
+  // CHeck if task is overdue
+  
+  WidgetTask wgTask = WidgetTask(
+    id: task.id.toString(),
+    title: task.title,
+    dueDate: task.dueDate,
+    today: wgToday,
+    overdue: overdue
+  );
+  return wgTask;
+} 
+
+void updateWidgetTasks(TaskService taskService) async {
+  
   var todayTasks = await taskService.getByFilterString("done = false && due_date < now/d+1d");
   if (todayTasks == null) {
     return;
   }
 
   // Set the number of tasks
-  HomeWidget.saveWidgetData('numTasks', todayTasks.length);
-  // var completedTask = await HomeWidget.getWidgetData('completeTask');
-  DateFormat timeFormat = DateFormat("HH:mm");
   var widgetTaskIDs = [];
   for (var task in todayTasks) {
     widgetTaskIDs.add(task.id);
-    var widgetTask = [timeFormat.format(task.dueDate!), task.title, task.id];
-    final jsonString = jsonEncode(widgetTask);
-    HomeWidget.saveWidgetData(task.id.toString(), jsonString);
+    var wgTask = convertTask(task);
+    await HomeWidget.saveWidgetData(task.id.toString(), jsonEncode(wgTask.toJSON()));
   }
 
   HomeWidget.saveWidgetData("widgetTaskIDs", widgetTaskIDs.toString());

@@ -157,12 +157,11 @@ class NotificationClass {
         // print("scheduled  DUE notification for time " + task.dueDate!.toString());
       }
     }
-    // print("notifications scheduled successfully");
-    try {
-      // I need to provide all tasks for today for the widget, not just tasks that are due > now
-      updateWidgetTasks(taskService);
-    } catch (e) {
-      print(e);
-    }
+    // try {
+    //   // I need to provide all tasks for today for the widget, not just tasks that are due > now
+    //   updateWidgetTasks(taskService);
+    // } catch (e) {
+    //   print(e);
+    // }
   }
 }

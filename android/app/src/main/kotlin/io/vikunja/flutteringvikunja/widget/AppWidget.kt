@@ -28,10 +28,16 @@ import es.antonborri.home_widget.HomeWidgetBackgroundIntent
 import android.net.Uri
 import android.util.Log
 import androidx.core.content.edit
+import io.vikunja.flutteringvikunja.widget.Task
+import java.time.format.DateTimeFormatter
+import java.time.*
+import java.util.*
 
 
 class AppWidget : GlanceAppWidget() {
     override val sizeMode = SizeMode.Single
+    var todayTasks: MutableList<Task> = ArrayList()
+    var otherTasks: MutableList<Task> = ArrayList()
 
     override val stateDefinition: GlanceStateDefinition<*>?
         get() = HomeWidgetGlanceStateDefinition()
@@ -42,8 +48,35 @@ class AppWidget : GlanceAppWidget() {
         }
     }
 
+    private fun getTasks(prefs: SharedPreferences) {
+        val gson = Gson()
+        val tasksJSON: MutableList<String> = ArrayList()
+        val taskIDChars = prefs.getString("widgetTaskIDs", null)
+        var taskIDs: List<String>  = emptyList()
+
+        if (taskIDChars != null) {
+            val noBrackets = taskIDChars.substring(1, taskIDChars.length - 1)
+            taskIDs = noBrackets.split(",")
+
+        } else {
+            Log.d("Widget", "There was a problem getting the widget ids")
+        }
+        if (taskIDs.isNotEmpty()) {
+            for (taskId in taskIDs) {
+                val taskJSON = prefs.getString(taskId.trim(), null)
+                val task = gson.fromJson(taskJSON, Task::class.java)
+                if (task.today) {
+                    todayTasks.add(task)
+                } else {
+                    otherTasks.add(task)
+                }
+            }
+        }
+
+        // At this point tasksJSON has all the tasks as
+    }
+
     private fun doneTask(context: Context, prefs: SharedPreferences, taskID: String) {
-        Log.d("WIDGET", taskID)
         prefs.edit {
             putString("completeTask", taskID)
             commit()
@@ -58,34 +91,17 @@ class AppWidget : GlanceAppWidget() {
     @Composable
     private fun GlanceContent(context: Context, currentState: HomeWidgetGlanceState) {
         val prefs = currentState.preferences
-        val tasks: MutableList<String> = ArrayList()
-
-        // Get an array of the widget tasks we gotta display
-        val taskIDChars = prefs.getString("widgetTaskIDs", null)
-        var taskIDs: List<String>  = emptyList()
-        if (taskIDChars != null) {
-            val noBrackets = taskIDChars.substring(1, taskIDChars.length - 1)
-            taskIDs = noBrackets.split(",")
-
-        } else {
-            Log.d("Widget", "There was a problem getting the widget ids")
-        }
-
-        // Extract all the tasks and put them into that array
-        if (taskIDs.isNotEmpty()) {
-            for (taskId in taskIDs) {
-                val task = prefs.getString(taskId.trim(), null)
-                task?.let { tasks.add(it) }
-            }
-        }
-
-
+        getTasks(prefs)
         Column {
             MyTopBar()
-            if (tasks.isNotEmpty()) {
-//                Log.d("Widget", tasks.toString())
+            if (todayTasks.isNotEmpty() or otherTasks.isNotEmpty()) {
                 LazyColumn(modifier = GlanceModifier.background(Color.White)) {
-                    items(tasks) { task ->
+                    items(todayTasks) { task ->
+                        RenderRow(context, task, prefs)
+                    }
+                }
+                LazyColumn(modifier = GlanceModifier.background(Color.White)) {
+                    items(otherTasks) { task ->
                         RenderRow(context, task, prefs)
                     }
                 }
@@ -114,25 +130,19 @@ class AppWidget : GlanceAppWidget() {
     }
 
     @Composable
-    private fun RenderRow(context: Context, taskJson: String, prefs : SharedPreferences) {
-        val gson = Gson()
-        val task = gson.fromJson(taskJson, ArrayList::class.java) as ArrayList<*>
-
-        // The task ID will be a double here even though it isnt immidiately obvious. This will have a decimal that needs to be removed
-        val dubID : Double = task[2] as Double // Unsafe cast
-        val taskID = dubID.toInt()
-
+    private fun RenderRow(context: Context, task: Task, prefs : SharedPreferences) {
+        Log.d("RenderRow", task.title)
         Row(modifier = GlanceModifier.fillMaxWidth().padding(8.dp)) {
             CheckBox(
                 checked = false,
-                onCheckedChange = { doneTask(context, prefs, taskID.toString())},
+                onCheckedChange = { doneTask(context, prefs, task.id)},
                 modifier = GlanceModifier.padding(horizontal = 8.dp)
             )
             Box(
                 modifier = GlanceModifier.padding(horizontal = 8.dp)
             ) {
                 Text(
-                    text = task[0].toString(), style = TextStyle(
+                    text = task.dueDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime().format(DateTimeFormatter.ofPattern("HH:mm")), style = TextStyle(
                         fontSize = 18.sp
                     )
                 )
@@ -141,7 +151,7 @@ class AppWidget : GlanceAppWidget() {
                 modifier = GlanceModifier.padding(horizontal = 8.dp)
             ) {
                 Text(
-                    text = task[1].toString(), style = TextStyle(
+                    text = task.title, style = TextStyle(
                         fontSize = 18.sp
                     )
                 )
