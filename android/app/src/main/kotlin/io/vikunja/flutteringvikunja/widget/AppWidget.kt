@@ -36,21 +36,22 @@ import java.util.*
 
 class AppWidget : GlanceAppWidget() {
     override val sizeMode = SizeMode.Single
-    var todayTasks: MutableList<Task> = ArrayList()
-    var otherTasks: MutableList<Task> = ArrayList()
+    private var todayTasks: MutableList<Task> = ArrayList()
+    private var otherTasks: MutableList<Task> = ArrayList()
 
-    override val stateDefinition: GlanceStateDefinition<*>?
+    override val stateDefinition: GlanceStateDefinition<*>
         get() = HomeWidgetGlanceStateDefinition()
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         provideContent {
             GlanceContent(context, currentState())
+            Log.d("Hello", "Provide Content")
         }
     }
 
+    @Composable
     private fun getTasks(prefs: SharedPreferences) {
         val gson = Gson()
-        val tasksJSON: MutableList<String> = ArrayList()
         val taskIDChars = prefs.getString("widgetTaskIDs", null)
         var taskIDs: List<String>  = emptyList()
 
@@ -72,9 +73,8 @@ class AppWidget : GlanceAppWidget() {
                 }
             }
         }
-
-        // At this point tasksJSON has all the tasks as
     }
+
 
     private fun doneTask(context: Context, prefs: SharedPreferences, taskID: String) {
         prefs.edit {
@@ -96,12 +96,16 @@ class AppWidget : GlanceAppWidget() {
             MyTopBar()
             if (todayTasks.isNotEmpty() or otherTasks.isNotEmpty()) {
                 LazyColumn(modifier = GlanceModifier.background(Color.White)) {
-                    items(todayTasks) { task ->
+                    item{
+                        Text("Today:")
+                    }
+                    items(todayTasks.sortedBy { it.dueDate }) { task ->
                         RenderRow(context, task, prefs)
                     }
-                }
-                LazyColumn(modifier = GlanceModifier.background(Color.White)) {
-                    items(otherTasks) { task ->
+                    item{
+                        Text("OverDue")
+                    }
+                    items(otherTasks.sortedBy { it.dueDate }) { task ->
                         RenderRow(context, task, prefs)
                     }
                 }
@@ -131,7 +135,6 @@ class AppWidget : GlanceAppWidget() {
 
     @Composable
     private fun RenderRow(context: Context, task: Task, prefs : SharedPreferences) {
-        Log.d("RenderRow", task.title)
         Row(modifier = GlanceModifier.fillMaxWidth().padding(8.dp)) {
             CheckBox(
                 checked = false,
