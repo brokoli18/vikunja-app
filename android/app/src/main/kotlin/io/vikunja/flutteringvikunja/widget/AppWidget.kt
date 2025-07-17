@@ -45,7 +45,6 @@ class AppWidget : GlanceAppWidget() {
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         provideContent {
             GlanceContent(context, currentState())
-            Log.d("Hello", "Provide Content")
         }
     }
 

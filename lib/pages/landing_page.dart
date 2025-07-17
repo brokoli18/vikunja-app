@@ -276,7 +276,6 @@ class LandingPageState extends State<LandingPage> {
       });
       return Future.value();
     }
-    // updateWidgetTasks(taskList);
     setState(() {
       if (taskList != null) {
         _tasks = taskList;
