@@ -100,13 +100,13 @@ class AppWidget : GlanceAppWidget() {
                         Text("Today:")
                     }
                     items(todayTasks.sortedBy { it.dueDate }) { task ->
-                        RenderRow(context, task, prefs)
+                        RenderRow(context, task, prefs, "HH:mm")
                     }
                     item{
                         Text("OverDue")
                     }
                     items(otherTasks.sortedBy { it.dueDate }) { task ->
-                        RenderRow(context, task, prefs)
+                        RenderRow(context, task, prefs, "dd MMM HH:mm")
                     }
                 }
             } else {
@@ -134,7 +134,7 @@ class AppWidget : GlanceAppWidget() {
     }
 
     @Composable
-    private fun RenderRow(context: Context, task: Task, prefs : SharedPreferences) {
+    private fun RenderRow(context: Context, task: Task, prefs : SharedPreferences, pattern: String) {
         Row(modifier = GlanceModifier.fillMaxWidth().padding(8.dp)) {
             CheckBox(
                 checked = false,
@@ -145,7 +145,7 @@ class AppWidget : GlanceAppWidget() {
                 modifier = GlanceModifier.padding(horizontal = 8.dp)
             ) {
                 Text(
-                    text = task.dueDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime().format(DateTimeFormatter.ofPattern("HH:mm")), style = TextStyle(
+                    text = task.dueDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime().format(DateTimeFormatter.ofPattern(pattern)), style = TextStyle(
                         fontSize = 18.sp
                     )
                 )
