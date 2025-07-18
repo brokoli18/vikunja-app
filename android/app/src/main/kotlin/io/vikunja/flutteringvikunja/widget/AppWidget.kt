@@ -42,7 +42,6 @@ class AppWidget : GlanceAppWidget() {
         get() = HomeWidgetGlanceStateDefinition()
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
-        Log.d("Kotlin", "Provide Glance")
         provideContent {
             GlanceContent(context, currentState())
         }
@@ -52,9 +51,6 @@ class AppWidget : GlanceAppWidget() {
     private fun getTasks(prefs: SharedPreferences) {
         val gson = Gson()
         val taskIDChars = prefs.getString("widgetTaskIDs", null)
-        if (taskIDChars != null) {
-            Log.d("Kotlin", taskIDChars)
-        }
         var taskIDs: List<String>  = emptyList()
 
         if (taskIDChars != null) {
@@ -92,6 +88,7 @@ class AppWidget : GlanceAppWidget() {
 
     @Composable
     private fun GlanceContent(context: Context, currentState: HomeWidgetGlanceState) {
+        Log.d("Widget", "ProvideGLance")
         val prefs = currentState.preferences
         getTasks(prefs)
         Column {

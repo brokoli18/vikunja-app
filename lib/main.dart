@@ -42,7 +42,7 @@ class IgnoreCertHttpOverrides extends HttpOverrides {
 Future<void> backgroundCallback(Uri? uri) async {
   // print(uri?.host);
   if (uri?.host == "completetask") {
-    await completeTask();
+    completeTask();
   }
 }
 

@@ -16,7 +16,7 @@ import 'package:vikunja_app/service/services.dart';
 // Update shared preferences using the home_widget package
 // First item needs to be the number of tasks that need to be saved
 
-Future<void> completeTask() async {
+void completeTask() async {
   Task? task;
   var taskID =
       await HomeWidget.getWidgetData("completeTask", defaultValue: "null");
@@ -45,7 +45,7 @@ Future<void> completeTask() async {
   if (taskID != null) {
     task = await taskService.getTask(int.tryParse(taskID)!);
     if ( task != null ){
-      await taskService.update(task.copyWith(done: true));
+      taskService.update(task.copyWith(done: true));
     }
   }
   // Get all the tasks again and update widget
@@ -108,7 +108,7 @@ void reRenderWidget() {
   HomeWidget.updateWidget(
     name: 'AppWidget',
     // androidName: '.widget.AppWidgetReciever',
-    qualifiedAndroidName: 'io.vikunja.flutteringvikunja.widget.AppWidget',
+    qualifiedAndroidName: 'io.vikunja.flutteringvikunja.widget.AppWidgetReciever',
   );
 
 }
