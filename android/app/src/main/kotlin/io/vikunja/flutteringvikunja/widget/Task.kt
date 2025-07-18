@@ -1,7 +1,8 @@
 package io.vikunja.flutteringvikunja.widget
-import java.time.LocalDateTime
+import androidx.annotation.Keep
 import java.util.Date
 
+@Keep
 class Task (
     var id: String,
     var title: String,

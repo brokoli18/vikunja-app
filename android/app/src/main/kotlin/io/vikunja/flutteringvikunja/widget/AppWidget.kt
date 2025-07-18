@@ -61,17 +61,17 @@ class AppWidget : GlanceAppWidget() {
         } else {
             Log.d("Widget", "There was a problem getting the widget ids")
         }
-//        if (taskIDs.isNotEmpty()) {
-//            for (taskId in taskIDs) {
-//                val taskJSON = prefs.getString(taskId.trim(), null)
-//                val task = gson.fromJson(taskJSON, Task::class.java)
-//                if (task.today) {
-//                    todayTasks.add(task)
-//                } else {
-//                    otherTasks.add(task)
-//                }
-//            }
-//        }
+        if (taskIDs.isNotEmpty()) {
+            for (taskId in taskIDs) {
+                val taskJSON = prefs.getString(taskId.trim(), null)
+                val task = gson.fromJson(taskJSON, Task::class.java)
+                if (task.today) {
+                    todayTasks.add(task)
+                } else {
+                    otherTasks.add(task)
+                }
+            }
+        }
     }
 
 
