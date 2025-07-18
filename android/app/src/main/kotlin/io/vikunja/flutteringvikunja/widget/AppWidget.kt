@@ -1,4 +1,4 @@
-package io.vikunja.flutteringvikunja
+package io.vikunja.flutteringvikunja.widget
 
 import HomeWidgetGlanceState
 import HomeWidgetGlanceStateDefinition
@@ -28,7 +28,6 @@ import es.antonborri.home_widget.HomeWidgetBackgroundIntent
 import android.net.Uri
 import android.util.Log
 import androidx.core.content.edit
-import io.vikunja.flutteringvikunja.widget.Task
 import java.time.format.DateTimeFormatter
 import java.time.*
 import java.util.*
@@ -39,10 +38,11 @@ class AppWidget : GlanceAppWidget() {
     private var todayTasks: MutableList<Task> = ArrayList()
     private var otherTasks: MutableList<Task> = ArrayList()
 
-    override val stateDefinition: GlanceStateDefinition<*>
+    override val stateDefinition: GlanceStateDefinition<*>?
         get() = HomeWidgetGlanceStateDefinition()
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
+        Log.d("Kotlin", "Provide Glance")
         provideContent {
             GlanceContent(context, currentState())
         }
@@ -52,6 +52,9 @@ class AppWidget : GlanceAppWidget() {
     private fun getTasks(prefs: SharedPreferences) {
         val gson = Gson()
         val taskIDChars = prefs.getString("widgetTaskIDs", null)
+        if (taskIDChars != null) {
+            Log.d("Kotlin", taskIDChars)
+        }
         var taskIDs: List<String>  = emptyList()
 
         if (taskIDChars != null) {
