@@ -47,8 +47,12 @@ class AppWidget : GlanceAppWidget() {
         }
     }
 
-    @Composable
+    // This function cannot be composable otherwise it wont run sometimes when shared prefs isnt changed
     private fun getTasks(prefs: SharedPreferences) {
+        // These need to be cleared in case this gets run multiple times
+        todayTasks.clear()
+        otherTasks.clear()
+        Log.d("Kotlin", "Getting tasks")
         val gson = Gson()
         val taskIDChars = prefs.getString("widgetTaskIDs", null)
         var taskIDs: List<String>  = emptyList()
