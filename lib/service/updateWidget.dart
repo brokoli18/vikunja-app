@@ -104,7 +104,6 @@ void updateWidgetTasks(TaskService taskService) async {
 }
 
 void reRenderWidget() {
-  print('Rerender widget');
   HomeWidget.updateWidget(
     name: 'AppWidget',
     // androidName: '.widget.AppWidgetReciever',

@@ -40,7 +40,8 @@ class IgnoreCertHttpOverrides extends HttpOverrides {
 
 @pragma("vm:entry-point")
 Future<void> backgroundCallback(Uri? uri) async {
-  // print(uri?.host);
+  print('Running the background Callback');
+  print(uri?.host);
   if (uri?.host == "completetask") {
     completeTask();
   }

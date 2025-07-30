@@ -88,11 +88,12 @@ class AppWidget : GlanceAppWidget() {
             Uri.parse("appWidget://completeTask")
         )
         backgroundIntent.send()
+        Log.d("Kotlin", "Sent the Intent")
     }
 
     @Composable
     private fun GlanceContent(context: Context, currentState: HomeWidgetGlanceState) {
-        Log.d("Widget", "ProvideGLance")
+//        Log.d("Widget", "ProvideGLance")
         val prefs = currentState.preferences
         getTasks(prefs)
         Column {
