@@ -672,11 +672,11 @@ packages:
     dependency: "direct main"
     description:
       path: "packages/home_widget"
-      ref: testing
-      resolved-ref: b27c7762dd738510e59458c9dcd68a182f3a77ed
+      ref: messing
+      resolved-ref: e6f7f148ec6fd16a778769459b7aad1c088453e9
       url: "https://github.com/brokoli18/home_widget.git"
     source: git
-    version: "0.8.0"
+    version: "0.8.1"
   html:
     dependency: transitive
     description:

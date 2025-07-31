@@ -17,6 +17,8 @@ import 'package:vikunja_app/service/services.dart';
 // First item needs to be the number of tasks that need to be saved
 
 void completeTask() async {
+  print('COMPLETING TASK');
+  return;
   Task? task;
   var taskID =
       await HomeWidget.getWidgetData("completeTask", defaultValue: "null");

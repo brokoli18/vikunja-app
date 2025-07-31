@@ -52,7 +52,7 @@ dependencies:
     git:
       url: https://github.com/brokoli18/home_widget.git
       path: packages/home_widget
-      ref: testing
+      ref: messing
 
 dependency_overrides:
   flutter_inappwebview:

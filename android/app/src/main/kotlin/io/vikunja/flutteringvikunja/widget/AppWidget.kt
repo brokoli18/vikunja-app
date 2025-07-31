@@ -52,7 +52,7 @@ class AppWidget : GlanceAppWidget() {
         // These need to be cleared in case this gets run multiple times
         todayTasks.clear()
         otherTasks.clear()
-        Log.d("Kotlin", "Getting tasks")
+        // Log.d("Kotlin", "Getting tasks")
         val gson = Gson()
         val taskIDChars = prefs.getString("widgetTaskIDs", null)
         var taskIDs: List<String>  = emptyList()
