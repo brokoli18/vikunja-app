@@ -19,7 +19,7 @@ import 'package:vikunja_app/pages/user/login.dart';
 import 'package:vikunja_app/theme/theme.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:flutter_downloader/flutter_downloader.dart';
-import 'package:home_widget/home_widget.dart';
+import 'package:vikunja_app/service/methodChannel.dart';
 
 import 'api/user_implementation.dart';
 import 'managers/notifications.dart';
@@ -125,6 +125,7 @@ void main() async {
   } catch (e) {
     print("Failed to initialize workmanager: $e");
   }
+  setupMethodChannel(); 
   runApp(ChangeNotifierProvider<ProjectProvider>(
       create: (_) => new ProjectProvider(),
       child: VikunjaGlobal(
@@ -138,13 +139,7 @@ void main() async {
           key: UniqueKey(),
         ),
       )));
-  try {
-    await HomeWidget.registerInteractivityCallback(backgroundCallback);
-    print('Callback registered successfully');
-  } catch (e) {
-    print("Failed to initialise widget callback");
-  }
-}
+ }
 
 class ThemeModel with ChangeNotifier {
   FlutterThemeMode _themeMode = FlutterThemeMode.light;

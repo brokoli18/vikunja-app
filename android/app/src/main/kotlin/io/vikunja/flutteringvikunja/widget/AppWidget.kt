@@ -24,10 +24,10 @@ import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
 import com.google.gson.Gson
-import es.antonborri.home_widget.HomeWidgetBackgroundIntent
-import android.net.Uri
 import android.util.Log
 import androidx.core.content.edit
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import java.time.format.DateTimeFormatter
 import java.time.*
 import java.util.*
@@ -37,6 +37,7 @@ class AppWidget : GlanceAppWidget() {
     override val sizeMode = SizeMode.Single
     private var todayTasks: MutableList<Task> = ArrayList()
     private var otherTasks: MutableList<Task> = ArrayList()
+
 
     override val stateDefinition: GlanceStateDefinition<*>?
         get() = HomeWidgetGlanceStateDefinition()
@@ -83,12 +84,8 @@ class AppWidget : GlanceAppWidget() {
             putString("completeTask", taskID)
             commit()
         }
-        val backgroundIntent = HomeWidgetBackgroundIntent.getBroadcast(
-            context,
-            Uri.parse("appWidget://completeTask")
-        )
-        backgroundIntent.send()
-        Log.d("Kotlin", "Sent the Intent")
+        val workRequest = OneTimeWorkRequestBuilder<FlutterWorker>().build()
+        WorkManager.getInstance(context).enqueue(workRequest)
     }
 
     @Composable

@@ -671,12 +671,11 @@ packages:
   home_widget:
     dependency: "direct main"
     description:
-      path: "packages/home_widget"
-      ref: messing
-      resolved-ref: e6f7f148ec6fd16a778769459b7aad1c088453e9
-      url: "https://github.com/brokoli18/home_widget.git"
-    source: git
-    version: "0.8.1"
+      name: home_widget
+      sha256: ad9634ef5894f3bac73f04d59e2e5151a39798f49985399fd928dadc828d974a
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.8.0"
   html:
     dependency: transitive
     description:
