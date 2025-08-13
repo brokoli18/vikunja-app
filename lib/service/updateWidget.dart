@@ -18,7 +18,6 @@ import 'package:vikunja_app/service/services.dart';
 
 void completeTask() async {
   print('COMPLETING TASK');
-  return;
   Task? task;
   var taskID =
       await HomeWidget.getWidgetData("completeTask", defaultValue: "null");

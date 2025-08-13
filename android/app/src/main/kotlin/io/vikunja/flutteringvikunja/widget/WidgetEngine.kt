@@ -27,8 +27,11 @@ class FlutterWorker(private val context: Context, params: WorkerParameters) :
 
         // Post to main thread using Handler
         Handler(Looper.getMainLooper()).post {
+            // Get a fluter loader object
             val flutterLoader = FlutterInjector.instance().flutterLoader()
+            // Use the object to start initialising dependencies
             flutterLoader.startInitialization(context)
+            // Actually start loading the dependencies
             flutterLoader.ensureInitializationComplete(context, null)
             // Allocate memory for the flutter engine
             engine = FlutterEngine(applicationContext)
@@ -36,6 +39,7 @@ class FlutterWorker(private val context: Context, params: WorkerParameters) :
             engine?.dartExecutor?.executeDartEntrypoint(
                 DartExecutor.DartEntrypoint.createDefault()
             )
+            // Invoke the method channel
             engine?.dartExecutor?.binaryMessenger?.let {
                 MethodChannel(it, "com.vikunja.widget/actions")
                     .invokeMethod("completeTask", null)
