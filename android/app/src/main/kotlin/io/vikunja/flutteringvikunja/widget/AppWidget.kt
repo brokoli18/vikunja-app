@@ -53,7 +53,6 @@ class AppWidget : GlanceAppWidget() {
         // These need to be cleared in case this gets run multiple times
         todayTasks.clear()
         otherTasks.clear()
-        // Log.d("Kotlin", "Getting tasks")
         val gson = Gson()
         val taskIDChars = prefs.getString("widgetTaskIDs", null)
         var taskIDs: List<String>  = emptyList()
@@ -90,7 +89,6 @@ class AppWidget : GlanceAppWidget() {
 
     @Composable
     private fun GlanceContent(context: Context, currentState: HomeWidgetGlanceState) {
-//        Log.d("Widget", "ProvideGLance")
         val prefs = currentState.preferences
         getTasks(prefs)
         Column {

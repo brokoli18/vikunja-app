@@ -59,7 +59,7 @@ List<Task> filterForTodayTasks(List<Task> tasks) {
   for (var task in tasks) {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
-    if (task.dueDate!.day == today.day) {
+    if (task.dueDate!.day == today.day && task.dueDate!.month == today.month && task.dueDate!.year == today.year ) {
       todayTasks.add(task);
     }
   }
@@ -71,7 +71,7 @@ WidgetTask convertTask(Task task) {
   final now = DateTime.now();
   final today = DateTime(now.year, now.month, now.day);
 
-  bool wgToday = task.dueDate!.day == today.day ? true : false;
+  bool wgToday = task.dueDate!.day == today.day && task.dueDate!.month == today.month && task.dueDate!.year == today.year? true : false;
   bool overdue = task.dueDate!.isBefore(now) ? true : false;
 
   // CHeck if task is overdue
