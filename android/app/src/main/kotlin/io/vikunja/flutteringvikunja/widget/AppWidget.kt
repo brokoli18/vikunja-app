@@ -56,7 +56,6 @@ class AppWidget : GlanceAppWidget() {
         val gson = Gson()
         val taskIDChars = prefs.getString("widgetTaskIDs", null)
         var taskIDs: List<String>  = emptyList()
-
         if (taskIDChars != null) {
             val noBrackets = taskIDChars.substring(1, taskIDChars.length - 1)
             taskIDs = noBrackets.split(",")
@@ -64,7 +63,7 @@ class AppWidget : GlanceAppWidget() {
         } else {
             Log.d("Widget", "There was a problem getting the widget ids")
         }
-        if (taskIDs.isNotEmpty()) {
+        if (taskIDs.isNotEmpty() && taskIDs.all { it != "" }) {
             for (taskId in taskIDs) {
                 val taskJSON = prefs.getString(taskId.trim(), null)
                 val task = gson.fromJson(taskJSON, Task::class.java)
