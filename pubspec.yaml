@@ -27,7 +27,7 @@ dependencies:
     git:
       url: https://github.com/ABausG/home_widget
       path: packages/home_widget
-      ref: master
+      ref: main
   html_editor_enhanced: ^2.6.0
   intl: ^0.20.2
   meta: ^1.11.0
