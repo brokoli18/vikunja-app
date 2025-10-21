@@ -42,6 +42,12 @@ void main() async {
   } catch (e) {
     print("Failed to initialize workmanager: $e");
   }
+  try {
+    await HomeWidget.registerInteractivityCallback(backgroundCallback);
+  } catch (e) {
+      //To-Do Set this up via sentry
+    }
+  }
 
   var sentryEnabled = await SettingsDatasource(
     FlutterSecureStorage(),
