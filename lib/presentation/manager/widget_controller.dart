@@ -5,6 +5,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:home_widget/home_widget.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:vikunja_app/core/network/client.dart';
+import 'package:vikunja_app/core/network/response.dart';
 import 'package:vikunja_app/data/data_sources/settings_data_source.dart';
 import 'package:vikunja_app/data/data_sources/task_data_source.dart';
 import 'package:vikunja_app/data/repositories/task_repository_impl.dart';
@@ -14,7 +15,7 @@ import 'package:vikunja_app/domain/repositories/task_repository.dart';
 
 
 void completeTask() async {
-  Task? task;
+  // Response<Task> task;
   var taskID = await HomeWidget.getWidgetData("completeTask", defaultValue: "null");
   if (taskID == "null") {
     developer.log("Tried to complete an empy task");
@@ -32,8 +33,9 @@ void completeTask() async {
     client.setIgnoreCerts(ignoreCertificates);
 
     TaskRepository taskService = TaskRepositoryImpl(TaskDataSource(client));
-    var Task = await taskService.getTask(int.parse(taskID!));
-    taskService.update(task!.copyWith(done: true));
+    var taskResponse = await taskService.getTask(int.parse(taskID!));
+    var task = taskResponse.toSuccess().body;
+    taskService.update(task.copyWith(done: true));
     updateWidget();
   } else {
     print('Cant set up the client to update task');
@@ -62,7 +64,7 @@ WidgetTask convertTask(Task task) {
   return wgTask;
 }
 
-List<Task> filterForTodayTasks(List<Task> tasks) {
+List<Task> filterForDueTasks(List<Task> tasks) {
   var todayTasks = <Task>[];
 
   for (var task in tasks) {
@@ -76,7 +78,6 @@ List<Task> filterForTodayTasks(List<Task> tasks) {
 }
 
 Future<void> updateWidget() async {
-  print('DEBUG UPDATE WIDGET');
   var datasource = SettingsDatasource(FlutterSecureStorage());
   var token = await datasource.getUserToken();
   var base = await datasource.getServer();
@@ -104,7 +105,7 @@ Future<void> updateWidget() async {
 
 void updateWidgetTasks(List<Task> tasklist) async {
   var widgetTaskIDs = [];
-  var todayTasks = filterForTodayTasks(tasklist);
+  var todayTasks = filterForDueTasks(tasklist);
 
   for (var task in todayTasks) {
     widgetTaskIDs.add(task.id);
