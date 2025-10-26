@@ -3,14 +3,64 @@ import 'dart:developer' as developer;
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:home_widget/home_widget.dart';
-import 'package:intl/intl.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:vikunja_app/core/network/client.dart';
 import 'package:vikunja_app/data/data_sources/settings_data_source.dart';
 import 'package:vikunja_app/data/data_sources/task_data_source.dart';
 import 'package:vikunja_app/data/repositories/task_repository_impl.dart';
 import 'package:vikunja_app/domain/entities/task.dart';
+import 'package:vikunja_app/domain/entities/widget_task.dart';
 import 'package:vikunja_app/domain/repositories/task_repository.dart';
+
+
+void completeTask() async {
+  Task? task;
+  var taskID = await HomeWidget.getWidgetData("completeTask", defaultValue: "null");
+  if (taskID == "null") {
+    developer.log("Tried to complete an empy task");
+  };
+
+  var datasource = SettingsDatasource(FlutterSecureStorage());
+  var token = await datasource.getUserToken();
+  var base = await datasource.getServer();
+
+  if (token != null && base != null) {
+    Client client = Client(token: token, base: base);
+    tz.initializeTimeZones();
+
+    var ignoreCertificates = await datasource.getIgnoreCertificates();
+    client.setIgnoreCerts(ignoreCertificates);
+
+    TaskRepository taskService = TaskRepositoryImpl(TaskDataSource(client));
+    var Task = await taskService.getTask(int.parse(taskID!));
+    taskService.update(task!.copyWith(done: true));
+    updateWidget();
+  } else {
+    print('Cant set up the client to update task');
+  }
+
+
+}
+
+WidgetTask convertTask(Task task) {
+  // Check if task is for today
+  final now = DateTime.now();
+  final today = DateTime(now.year, now.month, now.day);
+
+  bool wgToday = task.dueDate!.day == today.day ? true : false;
+  bool overdue = task.dueDate!.isBefore(now) ? true : false;
+
+  // CHeck if task is overdue
+
+  WidgetTask wgTask = WidgetTask(
+    id: task.id.toString(),
+    title: task.title,
+    dueDate: task.dueDate,
+    today: wgToday,
+    overdue: overdue
+  );
+  return wgTask;
+}
 
 List<Task> filterForTodayTasks(List<Task> tasks) {
   var todayTasks = <Task>[];
@@ -26,6 +76,7 @@ List<Task> filterForTodayTasks(List<Task> tasks) {
 }
 
 Future<void> updateWidget() async {
+  print('DEBUG UPDATE WIDGET');
   var datasource = SettingsDatasource(FlutterSecureStorage());
   var token = await datasource.getUserToken();
   var base = await datasource.getServer();
@@ -52,22 +103,24 @@ Future<void> updateWidget() async {
 }
 
 void updateWidgetTasks(List<Task> tasklist) async {
+  var widgetTaskIDs = [];
   var todayTasks = filterForTodayTasks(tasklist);
 
-  // Set the number of tasks
-  HomeWidget.saveWidgetData('numTasks', todayTasks.length);
-  DateFormat timeFormat = DateFormat("HH:mm");
-  var num = 0;
   for (var task in todayTasks) {
-    num++;
-    var widgetTask = [timeFormat.format(task.dueDate!), task.title];
-    final jsonString = jsonEncode(widgetTask);
-    HomeWidget.saveWidgetData(num.toString(), jsonString);
+    widgetTaskIDs.add(task.id);
+    var wgTask = convertTask(task);
+    await HomeWidget.saveWidgetData(task.id.toString(), jsonEncode(wgTask.toJSON()));
   }
+  HomeWidget.saveWidgetData("WidgetTaskIDs", widgetTaskIDs.toString());
+  reRenderWidget();
+}
 
-  // Update the widget
+void reRenderWidget() {
+  print('Rerender widget');
   HomeWidget.updateWidget(
     name: 'AppWidget',
-    qualifiedAndroidName: 'io.vikunja.flutteringvikunja.AppWidgetReciever',
+    // androidName: '.widget.AppWidgetReciever',
+    qualifiedAndroidName: 'io.vikunja.flutteringvikunja.widget.AppWidgetReciever',
   );
+
 }
