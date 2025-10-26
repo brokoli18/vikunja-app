@@ -92,7 +92,7 @@ Future<void> updateWidget() async {
     try {
       TaskRepository taskService = TaskRepositoryImpl(TaskDataSource(client));
       var widgetTasks = await taskService.getByFilterString(
-        "due_date > 0001-01-01 00:00 && done = false",
+        "done = false && due_date < now/d+1d",
       );
       if (widgetTasks.isSuccessful) {
         updateWidgetTasks(widgetTasks.toSuccess().body);
@@ -105,9 +105,8 @@ Future<void> updateWidget() async {
 
 void updateWidgetTasks(List<Task> tasklist) async {
   var widgetTaskIDs = [];
-  var todayTasks = filterForDueTasks(tasklist);
 
-  for (var task in todayTasks) {
+  for (var task in tasklist) {
     widgetTaskIDs.add(task.id);
     var wgTask = convertTask(task);
     await HomeWidget.saveWidgetData(task.id.toString(), jsonEncode(wgTask.toJSON()));
