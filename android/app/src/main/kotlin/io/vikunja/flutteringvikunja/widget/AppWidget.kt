@@ -28,10 +28,16 @@ import es.antonborri.home_widget.HomeWidgetBackgroundIntent
 import android.net.Uri
 import android.util.Log
 import androidx.core.content.edit
+import androidx.glance.Button
 import java.time.format.DateTimeFormatter
 import java.time.*
 import java.util.*
 
+import androidx.glance.appwidget.action.ActionCallback
+import androidx.glance.action.ActionParameters
+import androidx.glance.action.Action
+import androidx.glance.action.clickable
+import androidx.glance.appwidget.action.actionRunCallback
 
 class AppWidget : GlanceAppWidget() {
     override val sizeMode = SizeMode.Single
@@ -104,7 +110,7 @@ class AppWidget : GlanceAppWidget() {
             if (todayTasks.isNotEmpty() or otherTasks.isNotEmpty()) {
                 LazyColumn(modifier = GlanceModifier.background(Color.White)) {
                     item{
-                        Text("Today:")
+                        Text("Vikunja")
                     }
                     items(todayTasks.sortedBy { it.dueDate }) { task ->
                         RenderRow(context, task, prefs, "HH:mm")
@@ -127,6 +133,13 @@ class AppWidget : GlanceAppWidget() {
         }
     }
 
+    class InteractiveAction : ActionCallback {
+        override suspend fun onAction(context: Context, glanceId: GlanceId, parameters: ActionParameters) {
+            val backgroundIntent = HomeWidgetBackgroundIntent.getBroadcast(context, Uri.parse("appWidget://addTask"))
+            backgroundIntent.send()
+        }
+    }
+
     @Composable
     private fun WidgetTitleBar() {
         Box(
@@ -136,6 +149,10 @@ class AppWidget : GlanceAppWidget() {
             Text(
                 text = "Today",
                 style = TextStyle(fontSize = 20.sp, color = ColorProvider(Color.White))
+            )
+            Button(
+                text = "Add Task",
+                onClick = actionRunCallback<InteractiveAction>(),
             )
         }
     }
