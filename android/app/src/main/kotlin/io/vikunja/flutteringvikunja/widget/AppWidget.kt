@@ -124,9 +124,6 @@ class AppWidget : GlanceAppWidget() {
 
     @Composable
     private fun GlanceContent(context: Context, currentState: HomeWidgetGlanceState) {
-        val drawable = ContextCompat.getDrawable(context, R.drawable.plus2)
-        val isBitmap = drawable is BitmapDrawable
-        Log.d("Widget", isBitmap.toString())
         val prefs = currentState.preferences
         getTasks(prefs)
         Column {
@@ -172,7 +169,7 @@ class AppWidget : GlanceAppWidget() {
                     CircleIconButton(
                         enabled = true,
                         onClick = actionRunCallback<InteractiveAction>(),
-                        imageProvider = ImageProvider(R.drawable.vikunja_notification_logo),
+                        imageProvider = ImageProvider(R.drawable.add),
                         contentDescription = "Add a Task",
                     )
                 },
