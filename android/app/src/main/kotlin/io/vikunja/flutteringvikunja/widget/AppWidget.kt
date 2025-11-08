@@ -3,6 +3,7 @@ package io.vikunja.flutteringvikunja.widget
 import HomeWidgetGlanceState
 import HomeWidgetGlanceStateDefinition
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
@@ -35,11 +36,14 @@ import java.util.*
 import androidx.glance.appwidget.action.ActionCallback
 import androidx.glance.action.ActionParameters
 import androidx.glance.appwidget.action.actionRunCallback
+import io.vikunja.flutteringvikunja.MainActivity
 
 class InteractiveAction : ActionCallback {
     override suspend fun onAction(context: Context, glanceId: GlanceId, parameters: ActionParameters) {
-        val backgroundIntent = HomeWidgetBackgroundIntent.getBroadcast(context, Uri.parse("appWidget://addTask"))
-        backgroundIntent.send()
+        val intent = Intent(context, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        }
+        context.startActivity(intent)
     }
 }
 
@@ -145,11 +149,12 @@ class AppWidget : GlanceAppWidget() {
             Text(
                 text = "Today",
                 style = TextStyle(fontSize = 20.sp, color = ColorProvider(Color.White)),
-                modifier = GlanceModifier.defaultWeight().padding(end = 16.dp)
+                modifier = GlanceModifier.defaultWeight().padding(all = 8.dp)
             )
             Button(
                 text = "Add Task",
                 onClick = actionRunCallback<InteractiveAction>(),
+                modifier = GlanceModifier.defaultWeight().padding(all = 8.dp)
             )
         }
     }
