@@ -100,7 +100,7 @@ class AppWidget : GlanceAppWidget() {
         val prefs = currentState.preferences
         getTasks(prefs)
         Column {
-            MyTopBar()
+            WidgetTitleBar()
             if (todayTasks.isNotEmpty() or otherTasks.isNotEmpty()) {
                 LazyColumn(modifier = GlanceModifier.background(Color.White)) {
                     item{
@@ -128,7 +128,7 @@ class AppWidget : GlanceAppWidget() {
     }
 
     @Composable
-    private fun MyTopBar() {
+    private fun WidgetTitleBar() {
         Box(
             modifier = GlanceModifier.fillMaxWidth().height(50.dp).background(Color.Blue),
             contentAlignment = Alignment.Center,

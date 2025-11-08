@@ -38,7 +38,7 @@ void completeTask() async {
     taskService.update(task.copyWith(done: true));
     updateWidget();
   } else {
-    print('Cant set up the client to update task');
+    developer.log("There was an error initialising the client");
   }
 
 
@@ -116,7 +116,6 @@ void updateWidgetTasks(List<Task> tasklist) async {
 }
 
 void reRenderWidget() {
-  print('Rerender widget');
   HomeWidget.updateWidget(
     name: 'AppWidget',
     // androidName: '.widget.AppWidgetReciever',
