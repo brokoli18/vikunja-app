@@ -32,12 +32,16 @@ import androidx.glance.Button
 import java.time.format.DateTimeFormatter
 import java.time.*
 import java.util.*
-
 import androidx.glance.appwidget.action.ActionCallback
 import androidx.glance.action.ActionParameters
-import androidx.glance.action.Action
-import androidx.glance.action.clickable
 import androidx.glance.appwidget.action.actionRunCallback
+
+class InteractiveAction : ActionCallback {
+    override suspend fun onAction(context: Context, glanceId: GlanceId, parameters: ActionParameters) {
+        val backgroundIntent = HomeWidgetBackgroundIntent.getBroadcast(context, Uri.parse("appWidget://addTask"))
+        backgroundIntent.send()
+    }
+}
 
 class AppWidget : GlanceAppWidget() {
     override val sizeMode = SizeMode.Single
@@ -73,9 +77,6 @@ class AppWidget : GlanceAppWidget() {
         // For some reason if there are no tasks an array will get created with 1 empty/null entry.
         if (taskIDs.isNotEmpty() && taskIDs[0].isNotEmpty()) {
             for (taskId in taskIDs) {
-                Log.d("ITEM", "a" + taskId + "a")
-                Log.d("ITEM", taskId.length.toString())
-                Log.d("ITEM", (taskId == null).toString())
                 val taskJSON = prefs.getString(taskId.trim(), null)
                 val task = gson.fromJson(taskJSON, Task::class.java)
                 if (task.today) {
@@ -133,22 +134,18 @@ class AppWidget : GlanceAppWidget() {
         }
     }
 
-    class InteractiveAction : ActionCallback {
-        override suspend fun onAction(context: Context, glanceId: GlanceId, parameters: ActionParameters) {
-            val backgroundIntent = HomeWidgetBackgroundIntent.getBroadcast(context, Uri.parse("appWidget://addTask"))
-            backgroundIntent.send()
-        }
-    }
+
 
     @Composable
     private fun WidgetTitleBar() {
-        Box(
+        Row(
             modifier = GlanceModifier.fillMaxWidth().height(50.dp).background(Color.Blue),
-            contentAlignment = Alignment.Center,
+            horizontalAlignment = Alignment.Horizontal.CenterHorizontally
         ) {
             Text(
                 text = "Today",
-                style = TextStyle(fontSize = 20.sp, color = ColorProvider(Color.White))
+                style = TextStyle(fontSize = 20.sp, color = ColorProvider(Color.White)),
+                modifier = GlanceModifier.defaultWeight().padding(end = 16.dp)
             )
             Button(
                 text = "Add Task",
