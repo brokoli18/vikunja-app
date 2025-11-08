@@ -2,9 +2,11 @@ package io.vikunja.flutteringvikunja.widget
 
 import HomeWidgetGlanceState
 import HomeWidgetGlanceStateDefinition
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.drawable.BitmapDrawable
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -28,8 +30,8 @@ import com.google.gson.Gson
 import es.antonborri.home_widget.HomeWidgetBackgroundIntent
 import android.net.Uri
 import android.util.Log
+import androidx.core.content.ContextCompat
 import androidx.core.content.edit
-import androidx.glance.Button
 import androidx.glance.ImageProvider
 import java.time.format.DateTimeFormatter
 import java.time.*
@@ -44,10 +46,21 @@ import io.vikunja.flutteringvikunja.R
 
 class InteractiveAction : ActionCallback {
     override suspend fun onAction(context: Context, glanceId: GlanceId, parameters: ActionParameters) {
-        val intent = Intent(context, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-        }
-        context.startActivity(intent)
+        val addIntent = Intent(context,MainActivity::class.java)
+        addIntent.action = "ACTION_INSERT"
+        addIntent.type = "ADD_NEW_TASK"
+        addIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        PendingIntent.getActivity(
+                context,
+                0,
+                addIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        context.startActivity(addIntent)
+//        val intent = Intent(context, MainActivity::class.java).apply {
+//            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+//        }
+
     }
 }
 
@@ -111,7 +124,9 @@ class AppWidget : GlanceAppWidget() {
 
     @Composable
     private fun GlanceContent(context: Context, currentState: HomeWidgetGlanceState) {
-        Log.d("Widget", "ProvideGLance")
+        val drawable = ContextCompat.getDrawable(context, R.drawable.plus2)
+        val isBitmap = drawable is BitmapDrawable
+        Log.d("Widget", isBitmap.toString())
         val prefs = currentState.preferences
         getTasks(prefs)
         Column {
@@ -119,16 +134,16 @@ class AppWidget : GlanceAppWidget() {
             if (todayTasks.isNotEmpty() or otherTasks.isNotEmpty()) {
                 LazyColumn(modifier = GlanceModifier.background(Color.White)) {
                     item{
-                        Text("Vikunja")
+                        Text("Today")
                     }
                     items(todayTasks.sortedBy { it.dueDate }) { task ->
-                        RenderRow(context, task, prefs, "HH:mm")
+                        RenderRow(context, task, prefs, "HH:mm", Color.Black)
                     }
                     item{
-                        Text("OverDue")
+                        Text("Overdue")
                     }
                     items(otherTasks.sortedBy { it.dueDate }) { task ->
-                        RenderRow(context, task, prefs, "dd MMM HH:mm")
+                        RenderRow(context, task, prefs, "dd MMM HH:mm", Color.Red)
                     }
                 }
             } else {
@@ -157,33 +172,22 @@ class AppWidget : GlanceAppWidget() {
                     CircleIconButton(
                         enabled = true,
                         onClick = actionRunCallback<InteractiveAction>(),
-                        imageProvider = ImageProvider(R.drawable.vikunja_logo),
+                        imageProvider = ImageProvider(R.drawable.vikunja_notification_logo),
                         contentDescription = "Add a Task",
-//                        backgroundColor = ColorProvider(Color.White),
-//                        contentColor = ColorProvider(Color.White)
                     )
                 },
             )
         }
-//        Row(
-//            modifier = GlanceModifier.fillMaxWidth().height(50.dp).background(Color.Blue),
-//            horizontalAlignment = Alignment.Horizontal.CenterHorizontally
-//        ) {
-//            Text(
-//                text = "Today",
-//                style = TextStyle(fontSize = 20.sp, color = ColorProvider(Color.White)),
-//                modifier = GlanceModifier.defaultWeight().padding(all = 8.dp)
-//            )
-//            Button(
-//                text = "Add Task",
-//                onClick = actionRunCallback<InteractiveAction>(),
-//                modifier = GlanceModifier.defaultWeight().padding(all = 8.dp)
-//            )
-//        }
     }
 
     @Composable
-    private fun RenderRow(context: Context, task: Task, prefs : SharedPreferences, pattern: String) {
+    private fun RenderRow(
+        context: Context,
+        task: Task,
+        prefs: SharedPreferences,
+        pattern: String,
+        color: Color
+    ) {
         Row(modifier = GlanceModifier.fillMaxWidth().padding(8.dp)) {
             CheckBox(
                 checked = false,
@@ -195,7 +199,7 @@ class AppWidget : GlanceAppWidget() {
             ) {
                 Text(
                     text = task.dueDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime().format(DateTimeFormatter.ofPattern(pattern)), style = TextStyle(
-                        fontSize = 18.sp
+                        fontSize = 18.sp, color = ColorProvider(color)
                     )
                 )
             }
@@ -204,7 +208,7 @@ class AppWidget : GlanceAppWidget() {
             ) {
                 Text(
                     text = task.title, style = TextStyle(
-                        fontSize = 18.sp
+                        fontSize = 18.sp, color = ColorProvider(color)
                     )
                 )
             }
