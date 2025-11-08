@@ -30,13 +30,17 @@ import android.net.Uri
 import android.util.Log
 import androidx.core.content.edit
 import androidx.glance.Button
+import androidx.glance.ImageProvider
 import java.time.format.DateTimeFormatter
 import java.time.*
 import java.util.*
 import androidx.glance.appwidget.action.ActionCallback
 import androidx.glance.action.ActionParameters
 import androidx.glance.appwidget.action.actionRunCallback
+import androidx.glance.appwidget.components.CircleIconButton
+import androidx.glance.appwidget.components.TitleBar
 import io.vikunja.flutteringvikunja.MainActivity
+import io.vikunja.flutteringvikunja.R
 
 class InteractiveAction : ActionCallback {
     override suspend fun onAction(context: Context, glanceId: GlanceId, parameters: ActionParameters) {
@@ -142,21 +146,40 @@ class AppWidget : GlanceAppWidget() {
 
     @Composable
     private fun WidgetTitleBar() {
-        Row(
-            modifier = GlanceModifier.fillMaxWidth().height(50.dp).background(Color.Blue),
-            horizontalAlignment = Alignment.Horizontal.CenterHorizontally
+        Box(
+            modifier = GlanceModifier.background(ColorProvider(Color(0x803399ff)))
         ) {
-            Text(
-                text = "Today",
-                style = TextStyle(fontSize = 20.sp, color = ColorProvider(Color.White)),
-                modifier = GlanceModifier.defaultWeight().padding(all = 8.dp)
-            )
-            Button(
-                text = "Add Task",
-                onClick = actionRunCallback<InteractiveAction>(),
-                modifier = GlanceModifier.defaultWeight().padding(all = 8.dp)
+            TitleBar(
+                title = "Vikunja",
+                startIcon = ImageProvider(R.drawable.vikunja_logo),
+                iconColor = null,
+                actions = {
+                    CircleIconButton(
+                        enabled = true,
+                        onClick = actionRunCallback<InteractiveAction>(),
+                        imageProvider = ImageProvider(R.drawable.vikunja_logo),
+                        contentDescription = "Add a Task",
+//                        backgroundColor = ColorProvider(Color.White),
+//                        contentColor = ColorProvider(Color.White)
+                    )
+                },
             )
         }
+//        Row(
+//            modifier = GlanceModifier.fillMaxWidth().height(50.dp).background(Color.Blue),
+//            horizontalAlignment = Alignment.Horizontal.CenterHorizontally
+//        ) {
+//            Text(
+//                text = "Today",
+//                style = TextStyle(fontSize = 20.sp, color = ColorProvider(Color.White)),
+//                modifier = GlanceModifier.defaultWeight().padding(all = 8.dp)
+//            )
+//            Button(
+//                text = "Add Task",
+//                onClick = actionRunCallback<InteractiveAction>(),
+//                modifier = GlanceModifier.defaultWeight().padding(all = 8.dp)
+//            )
+//        }
     }
 
     @Composable
