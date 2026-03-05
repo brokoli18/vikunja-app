@@ -21,6 +21,7 @@ import 'package:vikunja_app/data/data_sources/settings_data_source.dart';
 import 'package:vikunja_app/init_page.dart';
 import 'package:vikunja_app/presentation/pages/home_page.dart';
 import 'package:vikunja_app/presentation/pages/login/login_page.dart';
+import 'package:vikunja_app/presentation/widgets/task/add_task_dialog.dart';
 import 'package:workmanager/workmanager.dart';
 
 import 'core/background_work.dart';
@@ -148,7 +149,8 @@ class VikunjaApp extends ConsumerWidget {
           routes: {
             '/': (context) => const InitPage(),
             '/login': (context) => const LoginPage(),
-            '/home': (context) => const HomePage(),
+            '/home': (context) => const HomePage(addTask: false),
+            '/addTask': (context) => const HomePage(addTask: true),
           },
           builder: (context, child) {
             final locale = Localizations.localeOf(context);

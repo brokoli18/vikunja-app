@@ -22,7 +22,8 @@ import 'package:vikunja_app/presentation/pages/task/task_list_page.dart';
 import 'package:vikunja_app/presentation/widgets/task/add_task_dialog.dart';
 
 class HomePage extends ConsumerStatefulWidget {
-  const HomePage({super.key});
+  final bool addTask;
+  const HomePage({super.key, this.addTask = false});
 
   @override
   HomePageState createState() => HomePageState();
@@ -55,6 +56,13 @@ class HomePageState extends ConsumerState<HomePage> {
   @override
   void initState() {
     super.initState();
+    print('HELLO');
+
+    if (widget.addTask) {
+      WidgetsBinding.instance.addPostFrameCallback((_){
+        showAddItemDialog("");
+      });
+    }
 
     Future.delayed(Duration.zero, () {
       scheduleIntent();
