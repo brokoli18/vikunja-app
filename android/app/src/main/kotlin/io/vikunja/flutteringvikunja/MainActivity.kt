@@ -2,11 +2,13 @@ package io.vikunja.flutteringvikunja
 
 import android.content.Intent
 import android.net.Uri
+import android.os.Bundle
 import android.util.Log
 import androidx.annotation.NonNull
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
+import java.io.File
 
 /**
  * App not open:
@@ -28,16 +30,35 @@ import io.flutter.plugin.common.MethodChannel
 class MainActivity : FlutterActivity() {
     private var launchMethod: String? = null
     private val CHANNEL = "vikunja"
-
     override fun onNewIntent(intent: Intent) {
-        callFlutterCode(intent, flutterEngine!!);
+
         super.onNewIntent(intent)
+        loggy("Running on new intent fool")
+        setIntent(intent)
+        flutterEngine?.let {
+            callFlutterCode(intent, it)
+        }
+
+    }
+
+    fun loggy(logline: String) {
+        val path = context.getFilesDir()
+        // /data/data/io.vikunja.app.unsigned/files/LET
+        Log.d("DEBUG", path.toString())
+        val letDirectory = File(path, "LET")
+        letDirectory.mkdirs()
+        val file = File(letDirectory, "test.txt")
+        file.appendText(logline + "\n")
     }
 
     private fun callFlutterCode(intent: Intent, flutterEngine: FlutterEngine) {
+        loggy("Calling flutter code")
         val channel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL)
         val action: String? = intent.action
         val type: String? = intent.type
+
+        loggy("ACTION: $action")
+        loggy("Type: $type")
 
         when (action) {
             Intent.ACTION_INSERT -> {
@@ -57,6 +78,7 @@ class MainActivity : FlutterActivity() {
 
 
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
+        loggy("Configuring the engine")
         super.configureFlutterEngine(flutterEngine)
 
         setLaunchMethod(intent)
@@ -65,6 +87,7 @@ class MainActivity : FlutterActivity() {
     }
 
     private fun setLaunchMethod(intent: Intent) {
+        loggy("Setting the launch method")
         val action: String? = intent.action
         val type: String? = intent.type
 
@@ -85,6 +108,7 @@ class MainActivity : FlutterActivity() {
     }
 
     private fun registerMethodChannel(flutterEngine: FlutterEngine) {
+        loggy("Registering method channel")
         MethodChannel(
             flutterEngine.dartExecutor.binaryMessenger, CHANNEL
         ).setMethodCallHandler { call, result ->
@@ -100,3 +124,38 @@ class MainActivity : FlutterActivity() {
         }
     }
 }
+
+// THe below fixes the bug but the add task popup is launched EVERY time
+//class MainActivity : FlutterActivity() {
+//
+//    private val CHANNEL = "vikunja"
+//
+//    override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
+//        Log.d("DEBUG", "Configuring FLutter Engine")
+//        super.configureFlutterEngine(flutterEngine)
+//
+//
+//        val channel = MethodChannel(
+//            flutterEngine.dartExecutor.binaryMessenger,
+//            CHANNEL
+//        )
+//        Log.d("DEBUG", "Set up Method Channel")
+//
+//        intent?.action?.let { action ->
+//            Log.d("DEBUG", "PROCESSING INTENT")
+//            channel.invokeMethod("launch_action", action)
+//        }
+//    }
+//
+//    override fun onNewIntent(intent: Intent) {
+//        super.onNewIntent(intent)
+//
+//        flutterEngine?.let {
+//            MethodChannel(
+//                it.dartExecutor.binaryMessenger,
+//                CHANNEL
+//            ).invokeMethod("launch_action", intent.action)
+//        }
+//    }
+//}
+

@@ -69,7 +69,7 @@ class InteractiveAction : ActionCallback {
             type = INTENT_TYPE_ADD_TASK
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
         }
-        
+
         context.startActivity(intent)
     }
 }

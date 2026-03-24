@@ -1,5 +1,6 @@
 import 'dart:developer' as developer;
 
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -112,8 +113,10 @@ class HomePageState extends ConsumerState<HomePage> {
 
   void scheduleIntent() async {
     try {
+      final file = File('/data/user/0/io.vikunja.app.unsigned/files');
+      file.writeAsString('This is a flutter write');
       String? argument = await platform.invokeMethod<String>("isQuickTile", "");
-
+      
       return showAddItemDialog(argument);
     } catch (e) {
       developer.log("Error $e");
